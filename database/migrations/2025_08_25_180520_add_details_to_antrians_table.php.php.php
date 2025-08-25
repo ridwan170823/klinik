@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('antrians', function (Blueprint $table) {
-            $table->unsignedBigInteger('dokter_i')->nullable()->after('nomor_antrian');
-            $table->unsignedBigInteger('jadwal_i')->nullable()->after('dokter_i');
+            $table->foreignId('dokter_id')->nullable()->constrained('dokters')->nullOnDelete()->after('nomor_antrian');
+            $table->foreignId('jadwal_id')->nullable()->constrained('jadwals')->nullOnDelete()->after('dokter_id');
         });
     }
 
@@ -23,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('antrians', function (Blueprint $table) {
-            $table->dropColumn(['dokter_i', 'jadwal_i']);
+            $table->dropConstrainedForeignId('dokter_id');
+            $table->dropConstrainedForeignId('jadwal_id');
         });
     }
 };
