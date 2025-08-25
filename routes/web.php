@@ -77,3 +77,11 @@ Route::delete('antrian/{antrian}', [AntrianController::class, 'destroy'])
 Route::patch('antrian/{antrian}/approve', [AntrianController::class, 'approve'])
     ->name('antrian.approve')
     ->middleware('checkRole:admin');
+
+// Ajax endpoints for dependent dropdowns
+Route::get('layanans/{layanan}/dokters', [AntrianController::class, 'dokters'])
+    ->name('layanan.dokters')
+    ->middleware('checkRole:pasien');
+Route::get('dokters/{dokter}/jadwals', [AntrianController::class, 'jadwals'])
+    ->name('dokter.jadwals')
+    ->middleware('checkRole:pasien');

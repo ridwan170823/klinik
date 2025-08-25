@@ -17,18 +17,14 @@ class AntrianController extends Controller
             ->orderBy('nomor_antrian')
             ->get();
 
-        $dokters = null;
+        
         $layanans = null;
         if (Auth::user()->role === 'pasien') {
             $layanans = Layanan::all();
-            $dokters = Dokter::with('jadwals')
-                ->when($request->layanan_id, fn ($q, $layanan) => $q->where('layanan_id', $layanan))
-                ->get();
         }
 
         return view('antrian.index', [
             'antrians' => $antrians,
-            'dokters' => $dokters,
             'layanans' => $layanans,
             'selectedLayanan' => $request->layanan_id,
         ]);

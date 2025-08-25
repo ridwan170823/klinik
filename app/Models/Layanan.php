@@ -11,8 +11,8 @@ class Layanan extends Model
 
     protected $guarded = ['id'];
 
-    public function layanans()
+    public function dokters()
     {
-        return $this->belongsToMany(Layanan::class, 'layanan');
+       return $this->belongsToMany(Dokter::class, 'dokter_layanan');
     }
 }

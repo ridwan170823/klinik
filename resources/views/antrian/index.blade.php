@@ -34,22 +34,19 @@
           <div class="form-row">
             <div class="col">
               <select class="form-control" name="layanan_id" id="layananSelect" required>
-                <option value="" disabled {{ $selectedLayanan ? '' : 'selected' }}>Pilih Layanan</option>
+                <option value="" disabled selected>Pilih Layanan</option>
                 @foreach ($layanans as $layanan)
-                <option value="{{ $layanan->id }}" {{ $selectedLayanan == $layanan->id ? 'selected' : '' }}>{{ $layanan->nama }}</option>
+                <option value="{{ $layanan->id }}">{{ $layanan->nama }}</option>
                 @endforeach
               </select>
             </div>
             <div class="col">
-              <select class="form-control" name="dokter_id" id="dokterSelect" required>
+              <select class="form-control" name="dokter_id" id="dokterSelect" required disabled>
                 <option value="" disabled selected>Pilih Dokter</option>
-                @foreach ($dokters as $dokter)
-                <option value="{{ $dokter->id }}" data-jadwals='@json($dokter->jadwals)'>{{ $dokter->nama }}</option>
-                @endforeach
               </select>
             </div>
             <div class="col">
-              <select class="form-control" name="jadwal_id" id="jadwalSelect" required>
+              <select class="form-control" name="jadwal_id" id="jadwalSelect" required disabled>
                 <option value="" disabled selected>Pilih Jadwal</option>
               </select>
             </div>
@@ -113,28 +110,43 @@ document.addEventListener('DOMContentLoaded', function () {
   const layananSelect = document.getElementById('layananSelect');
   const dokterSelect = document.getElementById('dokterSelect');
   const jadwalSelect = document.getElementById('jadwalSelect');
+  if (!layananSelect) return;
 
-  if (!dokterSelect) return;
-
-  function updateJadwals() {
-    const selected = dokterSelect.options[dokterSelect.selectedIndex];
-    const jadwals = selected ? JSON.parse(selected.getAttribute('data-jadwals')) : [];
+  layananSelect.addEventListener('change', function () {
+    const layananId = this.value;
+    dokterSelect.innerHTML = '<option value="" disabled selected>Pilih Dokter</option>';
     jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
-    jadwals.forEach(j => {
-      const opt = document.createElement('option');
-      opt.value = j.id;
-      opt.text = j.hari + ' ' + j.waktu_mulai + '-' + j.waktu_selesai;
-      jadwalSelect.appendChild(opt);
-    });
-  }
+    dokterSelect.disabled = true;
+    jadwalSelect.disabled = true;
 
-  dokterSelect.addEventListener('change', updateJadwals);
-
-  if (layananSelect) {
-    layananSelect.addEventListener('change', function () {
-      window.location = '?layanan_id=' + this.value;
-    });
-  }
+    fetch(`/layanans/${layananId}/dokters`)
+      .then(res => res.json())
+      .then(dokters => {
+        dokters.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d.id;
+          opt.text = d.nama;
+          dokterSelect.appendChild(opt);
+        });
+        dokterSelect.disabled = false;
+      });
+  });
+  dokterSelect.addEventListener('change', function () {
+    const dokterId = this.value;
+    jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
+    jadwalSelect.disabled = true;
+    etch(`/dokters/${dokterId}/jadwals`)
+      .then(res => res.json())
+      .then(jadwals => {
+        jadwals.forEach(j => {
+          const opt = document.createElement('option');
+          opt.value = j.id;
+          opt.text = j.hari + ' ' + j.waktu_mulai + '-' + j.waktu_selesai;
+          jadwalSelect.appendChild(opt);
+        });
+        jadwalSelect.disabled = false;
+      });
+  });
 });
 </script>
-@endsection
+  @endsection
