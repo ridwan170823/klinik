@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const dokterId = this.value;
     jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
     jadwalSelect.disabled = true;
-    etch(`/dokters/${dokterId}/jadwals`)
+    fetch(`/dokters/${dokterId}/jadwals`)
       .then(res => res.json())
       .then(jadwals => {
         jadwals.forEach(j => {

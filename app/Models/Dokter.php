@@ -20,4 +20,8 @@ class Dokter extends Model
     {
         return $this->belongsToMany(Jadwal::class, 'dokter_jadwal')->withTimestamps();
     }
+    public function layanans()
+    {
+        return $this->belongsToMany(Layanan::class, 'dokter_layanan')->withTimestamps();
+    }
 }

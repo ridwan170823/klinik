@@ -38,7 +38,8 @@ class AntrianController extends Controller
             'jadwal_id' => 'required|exists:jadwals,id',
         ]);
 
-        $dokter = Dokter::where('layanan_id', $data['layanan_id'])->find($data['dokter_id']);
+        $layanan = Layanan::find($data['layanan_id']);
+        $dokter = $layanan?->dokters()->find($data['dokter_id']);
         if (!$dokter) {
             return back()->withErrors(['dokter_id' => 'Dokter tidak tersedia untuk layanan ini']);
         }
@@ -72,14 +73,19 @@ class AntrianController extends Controller
     public function dokters(Layanan $layanan)
     {
         return response()->json(
-            $layanan->dokters()->select('id', 'nama')->get()
+          $layanan->dokters()->select('dokters.id', 'dokters.nama')->get()
         );
     }
 
     public function jadwals(Dokter $dokter)
     {
         return response()->json(
-            $dokter->jadwals()->select('id', 'hari', 'waktu_mulai', 'waktu_selesai')->get()
+            $dokter->jadwals()->select(
+                'jadwals.id',
+                'jadwals.hari',
+                'jadwals.waktu_mulai',
+                'jadwals.waktu_selesai'
+            )->get()
         );
     }
 }
