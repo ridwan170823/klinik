@@ -9,7 +9,16 @@ class Antrian extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'user_id',
+        'nomor_antrian',
+        'dokter_id',
+        'jadwal_id',
+        'status',
+        'layanan_id',
+        'tanggal',
+        'nomor',
+    ];
 
     public function user()
     {
@@ -24,5 +33,9 @@ class Antrian extends Model
     public function jadwal()
     {
         return $this->belongsTo(Jadwal::class);
+    }
+    public function layanan()
+    {
+        return $this->belongsTo(Layanan::class);
     }
 }
