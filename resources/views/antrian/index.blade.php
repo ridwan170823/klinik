@@ -33,6 +33,14 @@
           @csrf
           <div class="form-row">
             <div class="col">
+              <select class="form-control" name="layanan_id" id="layananSelect" required>
+                <option value="" disabled {{ $selectedLayanan ? '' : 'selected' }}>Pilih Layanan</option>
+                @foreach ($layanans as $layanan)
+                <option value="{{ $layanan->id }}" {{ $selectedLayanan == $layanan->id ? 'selected' : '' }}>{{ $layanan->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col">
               <select class="form-control" name="dokter_id" id="dokterSelect" required>
                 <option value="" disabled selected>Pilih Dokter</option>
                 @foreach ($dokters as $dokter)
@@ -102,6 +110,7 @@
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  const layananSelect = document.getElementById('layananSelect');
   const dokterSelect = document.getElementById('dokterSelect');
   const jadwalSelect = document.getElementById('jadwalSelect');
 
@@ -120,6 +129,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   dokterSelect.addEventListener('change', updateJadwals);
+
+  if (layananSelect) {
+    layananSelect.addEventListener('change', function () {
+      window.location = '?layanan_id=' + this.value;
+    });
+  }
 });
 </script>
 @endsection
