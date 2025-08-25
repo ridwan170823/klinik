@@ -46,4 +46,9 @@ class User extends Authenticatable
   {
     return $this->hasMany(Perjanjian::class);
   }
+  public function antrians()
+  {
+    return $this->hasMany(Antrian::class);
+  }
+
 }

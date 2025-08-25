@@ -6,6 +6,7 @@ use App\Http\Controllers\Obat\ObatController;
 use App\Http\Controllers\Jadwal\JadwalController;
 use App\Http\Controllers\Layanan\LayananController;
 use App\Http\Controllers\Pasien\PasienController;
+use App\Http\Controllers\Antrian\AntrianController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -63,3 +64,16 @@ Route::resource('jadwal', JadwalController::class)
     // Jadwal CRUD
 Route::resource('layanan', LayananController::class)
     ->middleware('checkRole:dokter,admin');
+// Antrian routes
+Route::get('antrian', [AntrianController::class, 'index'])
+    ->name('antrian.index')
+    ->middleware('checkRole:admin,pasien');
+Route::post('antrian', [AntrianController::class, 'store'])
+    ->name('antrian.store')
+    ->middleware('checkRole:pasien');
+Route::delete('antrian/{antrian}', [AntrianController::class, 'destroy'])
+    ->name('antrian.destroy')
+    ->middleware('checkRole:admin');
+Route::patch('antrian/{antrian}/approve', [AntrianController::class, 'approve'])
+    ->name('antrian.approve')
+    ->middleware('checkRole:admin');

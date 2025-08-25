@@ -80,26 +80,20 @@
       @endif
 
       @if (Auth::user()->role == 'pasien')
-      <!-- Nav Item - Utilities Collapse Menu -->
+      
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-          aria-expanded="true" aria-controls="collapseUtilities">
-          <i class="fas fa-user-injured"></i> <span>Pasien</span>
+        <a class="nav-link" href="{{ route('antrian.index') }}">
+          <i class="fas fa-list-ol"></i>
+          <span>Antrian</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Action</h6>
-            <a class="collapse-item" href="{{ route('pasien.index') }}">Riwayat Berobat</a>
-          </div>
-        </div>
       </li>
       @endif
 
       @if (Auth::user()->role == 'admin')
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
-          aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="{{ route('antrian.index') }}" >
+         
           <i class="fas fa-user-plus"></i></fas>
           <span>Daftar Antrian</span>
         </a>
