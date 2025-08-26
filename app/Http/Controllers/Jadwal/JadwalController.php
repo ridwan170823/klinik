@@ -41,8 +41,9 @@ class JadwalController extends Controller
     {
         // Ambil semua dokter untuk dropdown
         $dokters = Dokter::all();
+        $timeSlots = config('jadwal.time_slots');
 
-        return view('admin.jadwal.create', compact('dokters'));
+        return view('admin.jadwal.create', compact('dokters', 'timeSlots'));
     }
 
     /**
@@ -68,8 +69,10 @@ class JadwalController extends Controller
     public function edit(Jadwal $jadwal)
     {
         $dokters = Dokter::all();
+        $timeSlots = config('jadwal.time_slots');
 
-        return view('admin.jadwal.edit', compact('jadwal', 'dokters'));
+        
+        return view('admin.jadwal.edit', compact('jadwal', 'dokters', 'timeSlots'));
     }
 
     /**

@@ -54,14 +54,24 @@
 
           <div class="form-group">
             <label for="waktu_mulai">Waktu Mulai</label>
-            <input type="time" class="form-control" id="waktu_mulai" name="waktu_mulai"
-              value="{{ old('waktu_mulai', $jadwal->waktu_mulai) }}">
+            <select class="form-control" id="waktu_mulai" name="waktu_mulai">
+              @foreach($timeSlots as $slot)
+                <option value="{{ $slot['mulai'] }}" {{ old('waktu_mulai', $jadwal->waktu_mulai) == $slot['mulai'] ? 'selected' : '' }}>
+                  {{ $slot['mulai'] }} - {{ $slot['selesai'] }}
+                </option>
+              @endforeach
+            </select>
           </div>
 
           <div class="form-group">
             <label for="waktu_selesai">Waktu Selesai</label>
-            <input type="time" class="form-control" id="waktu_selesai" name="waktu_selesai"
-              value="{{ old('waktu_selesai', $jadwal->waktu_selesai) }}">
+            <select class="form-control" id="waktu_selesai" name="waktu_selesai">
+              @foreach($timeSlots as $slot)
+                <option value="{{ $slot['selesai'] }}" {{ old('waktu_selesai', $jadwal->waktu_selesai) == $slot['selesai'] ? 'selected' : '' }}>
+                  {{ $slot['mulai'] }} - {{ $slot['selesai'] }}
+                </option>
+              @endforeach
+            </select>
           </div>
 
           <button type="submit" class="btn btn-info">Update</button>

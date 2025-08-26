@@ -68,8 +68,14 @@
           <!-- Waktu Mulai -->
           <div class="form-group">
             <label for="waktu_mulai">Waktu Mulai</label>
-            <input type="time" class="form-control @error('waktu_mulai') is-invalid @enderror"
-                   id="waktu_mulai" name="waktu_mulai" value="{{ old('waktu_mulai') }}">
+            <select class="form-control @error('waktu_mulai') is-invalid @enderror" id="waktu_mulai" name="waktu_mulai">
+              <option value="">-- Pilih Waktu Mulai --</option>
+              @foreach($timeSlots as $slot)
+                <option value="{{ $slot['mulai'] }}" {{ old('waktu_mulai') == $slot['mulai'] ? 'selected' : '' }}>
+                  {{ $slot['mulai'] }} - {{ $slot['selesai'] }}
+                </option>
+              @endforeach
+            </select>
             @error('waktu_mulai')
               <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
             @enderror
@@ -78,8 +84,14 @@
           <!-- Waktu Selesai -->
           <div class="form-group">
             <label for="waktu_selesai">Waktu Selesai</label>
-            <input type="time" class="form-control @error('waktu_selesai') is-invalid @enderror"
-                   id="waktu_selesai" name="waktu_selesai" value="{{ old('waktu_selesai') }}">
+           <select class="form-control @error('waktu_selesai') is-invalid @enderror" id="waktu_selesai" name="waktu_selesai">
+              <option value="">-- Pilih Waktu Selesai --</option>
+              @foreach($timeSlots as $slot)
+                <option value="{{ $slot['selesai'] }}" {{ old('waktu_selesai') == $slot['selesai'] ? 'selected' : '' }}>
+                  {{ $slot['mulai'] }} - {{ $slot['selesai'] }}
+                </option>
+              @endforeach
+            </select>
             @error('waktu_selesai')
               <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
             @enderror

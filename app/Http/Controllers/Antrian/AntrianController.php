@@ -13,18 +13,18 @@ class AntrianController extends Controller
 {
     public function index(Request $request)
     {
-        $antrians = Antrian::with(['user', 'dokter', 'jadwal'])
-            ->orderBy('nomor_antrian')
-            ->get();
+        $query = Antrian::with(['user', 'dokter', 'jadwal'])
+            ->orderBy('nomor_antrian');
 
         
         $layanans = null;
         if (Auth::user()->role === 'pasien') {
+            $query->where('user_id', Auth::id());
             $layanans = Layanan::all();
         }
 
         return view('antrian.index', [
-            'antrians' => $antrians,
+            'antrians' => $query->get(),
             'layanans' => $layanans,
             'selectedLayanan' => $request->layanan_id,
         ]);
@@ -44,12 +44,23 @@ class AntrianController extends Controller
             return back()->withErrors(['dokter_id' => 'Dokter tidak tersedia untuk layanan ini']);
         }
 
-        $last = Antrian::max('nomor_antrian') ?? 0;
-        $number = $last + 1;
+        $hasActive = Antrian::where('user_id', Auth::id())
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
+        if ($hasActive) {
+            return back()->withErrors(['layanan_id' => 'Anda sudah memiliki antrian aktif']);
+        }
+
+        $slotTaken = Antrian::where('dokter_id', $data['dokter_id'])
+            ->where('jadwal_id', $data['jadwal_id'])
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
+        if ($slotTaken) {
+            return back()->withErrors(['jadwal_id' => 'Slot jadwal sudah diambil']);
+        }
 
         Antrian::create([
             'user_id' => Auth::id(),
-            'nomor_antrian' => $number,
             'layanan_id' => $data['layanan_id'],
             'dokter_id' => $data['dokter_id'],
             'jadwal_id' => $data['jadwal_id'],
@@ -67,7 +78,13 @@ class AntrianController extends Controller
 
     public function approve(Antrian $antrian)
     {
-        $antrian->update(['status' => 'approved']);
+        if ($antrian->status !== 'approved') {
+            $last = Antrian::whereNotNull('nomor_antrian')->max('nomor_antrian') ?? 0;
+            $antrian->update([
+                'status' => 'approved',
+                'nomor_antrian' => $last + 1,
+            ]);
+        }
         return redirect()->route('antrian.index');
     }
     public function dokters(Layanan $layanan)
