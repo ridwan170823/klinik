@@ -38,9 +38,12 @@ class AntrianController extends Controller
             'jadwal_id' => 'required|exists:jadwals,id',
         ]);
 
+        $limit = (int) config('antrian.max_days_ahead');
+        $maxDate = now()->addDays($limit)->toDateString();
+
         $layanan = Layanan::find($data['layanan_id']);
         $dokter = $layanan?->dokters()->find($data['dokter_id']);
-        if (!$dokter) {
+        if (! $dokter) {
             return back()->withErrors(['dokter_id' => 'Dokter tidak tersedia untuk layanan ini']);
         }
 
@@ -53,10 +56,11 @@ class AntrianController extends Controller
 
         $slotTaken = Antrian::where('dokter_id', $data['dokter_id'])
             ->where('jadwal_id', $data['jadwal_id'])
+            // ->whereDate('tanggal', $data['tanggal'])
             ->whereIn('status', ['pending', 'approved'])
             ->exists();
         if ($slotTaken) {
-            return back()->withErrors(['jadwal_id' => 'Slot jadwal sudah diambil']);
+            return back()->withErrors(['jadwal_id' => 'Slot jadwal sudah diambil'])->withInput();
         }
 
         Antrian::create([
@@ -64,6 +68,7 @@ class AntrianController extends Controller
             'layanan_id' => $data['layanan_id'],
             'dokter_id' => $data['dokter_id'],
             'jadwal_id' => $data['jadwal_id'],
+            // 'tanggal' => $data['tanggal'],
             'status' => 'pending',
         ]);
 
@@ -90,7 +95,16 @@ class AntrianController extends Controller
     public function dokters(Layanan $layanan)
     {
         return response()->json(
-          $layanan->dokters()->select('dokters.id', 'dokters.nama')->get()
+          $layanan->dokters()
+                ->select('dokters.id', 'dokters.nama', 'dokters.image', 'dokters.spesialis')
+                ->get()
+                ->map(function ($dokter) {
+                    $dokter->image = $dokter->image
+                        ? asset('storage/'.$dokter->image)
+                        : asset('img/undraw_profile.svg');
+
+                    return $dokter;
+                })
         );
     }
 

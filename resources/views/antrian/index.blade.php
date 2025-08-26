@@ -33,6 +33,9 @@
           @csrf
           <div class="form-row">
             <div class="col">
+              <input type="date" class="form-control" name="tanggal" required min="{{ now()->toDateString() }}" max="{{ now()->addDays((int) config('antrian.max_days_ahead'))->toDateString() }}">
+            </div>
+            <div class="col">
               <select class="form-control" name="layanan_id" id="layananSelect" required>
                 <option value="" disabled selected>Pilih Layanan</option>
                 @foreach ($layanans as $layanan)
@@ -49,6 +52,15 @@
               <select class="form-control" name="jadwal_id" id="jadwalSelect" required disabled>
                 <option value="" disabled selected>Pilih Jadwal</option>
               </select>
+            </div>
+            <div class="col">
+              <input type="date" class="form-control" name="tanggal" id="tanggalInput" required
+                     min="{{ now()->toDateString() }}"
+                     max="{{ now()->addDays(config('antrian.max_days_ahead'))->toDateString() }}"
+                     value="{{ old('tanggal') }}">
+              @error('tanggal')
+              <div class="text-danger">{{ $message }}</div>
+              @enderror
             </div>
             <div class="col">
               <button type="submit" class="btn btn-primary font-weight-bold">Ambil Antrian</button>
@@ -125,7 +137,8 @@ document.addEventListener('DOMContentLoaded', function () {
         dokters.forEach(d => {
           const opt = document.createElement('option');
           opt.value = d.id;
-          opt.text = d.nama;
+          const imgSrc = d.image || '/img/undraw_profile.svg';
+          opt.innerHTML = `<img src="${imgSrc}" alt="${d.nama}" width="30" height="30" class="rounded-circle mr-2"> ${d.nama} - ${d.spesialis}`;
           dokterSelect.appendChild(opt);
         });
         dokterSelect.disabled = false;
@@ -141,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         jadwals.forEach(j => {
           const opt = document.createElement('option');
           opt.value = j.id;
-          opt.text = j.hari + ' ' + j.waktu_mulai + '-' + j.waktu_selesai;
+          opt.text = `${j.hari} (${j.waktu_mulai} - ${j.waktu_selesai})`;
           jadwalSelect.appendChild(opt);
         });
         jadwalSelect.disabled = false;
