@@ -9,6 +9,7 @@ use App\Models\Layanan;
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\NomorAntrianAssigned;
 
 class AntrianController extends Controller
 {
@@ -115,6 +116,7 @@ class AntrianController extends Controller
                 'status' => 'approved',
                 'nomor_antrian' => $last + 1,
             ]);
+             $antrian->user->notify(new NomorAntrianAssigned($antrian));
         }
         return redirect()->route('antrian.index');
     }

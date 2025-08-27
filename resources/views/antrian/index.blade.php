@@ -102,7 +102,7 @@
             <tbody>
               @foreach ($antrians as $antrian)
               <tr>
-                <td>{{ $antrian->nomor_antrian }}</td>
+                <td>{{ $antrian->status === 'approved' ? $antrian->nomor_antrian : 'Menunggu' }}</td>
                 <td>{{ $antrian->user->name }}</td>
                 <td>{{ $antrian->dokter->nama }}</td>
                 <td>{{ $antrian->jadwal->hari }} {{ $antrian->jadwal->waktu_mulai }}-{{ $antrian->jadwal->waktu_selesai }}</td>
