@@ -142,6 +142,7 @@ class AntrianController extends Controller
         return response()->json(
             
             $dokter->jadwals()
+            ->where('jadwals.is_available', true)
                 ->whereNotIn('jadwals.id', $taken)
                 ->select(
                     'jadwals.id',

@@ -59,17 +59,25 @@
                 <th>Hari Praktek</th>
                 <th>Waktu Mulai</th>
                 <th>Waktu Selesai</th>
+                <th>Status</th>
                 <th>Kapasitas</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               @foreach ($jadwals as $index => $jadwal)
-              <tr>
+              <tr class="{{ $jadwal->is_available ? '' : 'table-secondary' }}">
                 <td>{{ $index + 1 }}</td>
                 <td>{{ $jadwal->hari }}</td>
                 <td>{{ $jadwal->waktu_mulai }}</td>
                 <td>{{ $jadwal->waktu_selesai }}</td>
+                <td>
+                  @if($jadwal->is_available)
+                    <span class="badge badge-success">Tersedia</span>
+                  @else
+                    <span class="badge badge-danger">Istirahat</span>
+                  @endif
+                </td>
                 <td>{{ $jadwal->kapasitas }}</td>
                 <td>
                   <a href="{{ route('jadwal.edit', $jadwal->id) }}" class="btn btn-warning btn-sm">Edit</a>

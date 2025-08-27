@@ -90,15 +90,19 @@
             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
             @enderror
           </div>
-          <select name="jadwal_id" id="jadwal_id" class="form-control @error('jadwal_id') is-invalid @enderror">
+          <div class="form-group">
+            <label for="jadwal_id">Pilih Jadwal</label>
+            <select name="jadwal_id[]" id="jadwal_id" class="form-control @error('jadwal_id') is-invalid @enderror" multiple>
   @foreach($jadwals as $jadwal)
-    <option value="{{ $jadwal->id }}">
+    <option value="{{ $jadwal->id }}" {{ collect(old('jadwal_id'))->contains($jadwal->id) ? 'selected' : '' }}>
       {{ $jadwal->hari }} ({{ $jadwal->waktu_mulai }} - {{ $jadwal->waktu_selesai }})
     </option>
   @endforeach
-</select>
-
-
+  </select>
+            @error('jadwal_id')
+            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+            @enderror
+          </div>
           <!-- Foto Dokter -->
           <div class="form-group">
             <label for="image">Foto Dokter</label>

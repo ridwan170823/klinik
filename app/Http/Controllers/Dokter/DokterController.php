@@ -18,7 +18,7 @@ class DokterController extends Controller
 
     public function create()
     {
-        $jadwals = Jadwal::all();
+        $jadwals = Jadwal::where('is_available', true)->get();
         return view('admin.dokter.create', compact('jadwals'));
     }
 
@@ -31,6 +31,8 @@ class DokterController extends Controller
         'alamat' => 'nullable|string',
         'biografi' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'jadwal_id' => 'nullable|array',
+        'jadwal_id.*' => 'exists:jadwals,id',
     ]);
 
      $data = $request->only(['nama', 'spesialis', 'telepon', 'alamat', 'biografi']);
@@ -43,7 +45,7 @@ class DokterController extends Controller
     $dokter = Dokter::create($data);
 
     // Simpan relasi ke tabel pivot
-    $dokter->jadwals()->sync($request->jadwal_id);
+   $dokter->jadwals()->sync($request->input('jadwal_id', []));
 
     return redirect()->route('dokter.index')->with('success', 'Data dokter berhasil ditambahkan.');
 }
@@ -55,7 +57,7 @@ class DokterController extends Controller
 
     public function edit(Dokter $dokter)
 {
-    $jadwals = Jadwal::all();
+    $jadwals = Jadwal::where('is_available', true)->get();
     $dokter->load('jadwals');
     return view('admin.dokter.edit', compact('dokter', 'jadwals'));
 }
