@@ -1,5 +1,7 @@
 @extends('layouts.main')
-
+@php
+use Illuminate\Support\Str;
+@endphp
 @section('content')
 <!-- Main Content -->
 <div id="content">
@@ -51,13 +53,16 @@
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
               <tr>
-                <th>No</th>
-                <th>Foto</th>
-                <th>Nama Dokter</th>
-                <th>Spesialis</th>
-                <th>Jadwal Praktek</th>
-                <th>Actions</th>
-              </tr>
+                  <th>No</th>
+                  <th>Foto</th>
+                  <th>Nama Dokter</th>
+                  <th>Spesialis</th>
+                  <th>Telepon</th>
+                  <th>Alamat</th>
+                  <th>Biografi</th>
+                  <th>Jadwal Praktek</th>
+                  <th>Actions</th>
+                </tr>
             </thead>
             <tbody>
               @foreach ($dokters as $index => $dokter)
@@ -72,6 +77,9 @@
                 </td>
                 <td>{{ $dokter->nama }}</td>
                 <td>{{ $dokter->spesialis }}</td>
+                <td>{{ $dokter->telepon }}</td>
+                <td class="text-wrap text-break">{{ $dokter->alamat }}</td>
+                <td class="text-wrap text-break">{{ Str::limit($dokter->biografi, 50) }}</td>
                <td>
   @if($dokter->jadwals->isNotEmpty())
     {{ $dokter->jadwals->map(function($j){

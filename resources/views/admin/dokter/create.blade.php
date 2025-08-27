@@ -62,7 +62,34 @@
             <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
             @enderror
           </div>
+      <!-- Telepon -->
+          <div class="form-group">
+            <label for="telepon">Telepon</label>
+            <input type="text" class="form-control @error('telepon') is-invalid @enderror" id="telepon"
+              name="telepon" placeholder="Nomor Telepon" value="{{ old('telepon') }}">
+            @error('telepon')
+            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+            @enderror
+          </div>
 
+          <!-- Alamat -->
+          <div class="form-group">
+            <label for="alamat">Alamat</label>
+            <input type="text" class="form-control @error('alamat') is-invalid @enderror" id="alamat"
+              name="alamat" placeholder="Alamat" value="{{ old('alamat') }}">
+            @error('alamat')
+            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+            @enderror
+          </div>
+
+          <!-- Biografi -->
+          <div class="form-group">
+            <label for="biografi">Biografi</label>
+            <textarea class="form-control @error('biografi') is-invalid @enderror" id="biografi" name="biografi" rows="3">{{ old('biografi') }}</textarea>
+            @error('biografi')
+            <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+            @enderror
+          </div>
           <select name="jadwal_id" id="jadwal_id" class="form-control @error('jadwal_id') is-invalid @enderror">
   @foreach($jadwals as $jadwal)
     <option value="{{ $jadwal->id }}">

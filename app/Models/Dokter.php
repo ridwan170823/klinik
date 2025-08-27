@@ -13,6 +13,9 @@ class Dokter extends Model
         'image',
         'nama',
         'spesialis',
+        'telepon',
+        'alamat',
+        'biografi',
         // HAPUS 'jadwal_id' di sini
     ];
 

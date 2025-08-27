@@ -27,10 +27,13 @@ class DokterController extends Controller
     $request->validate([
         'nama' => 'required|string|max:255',
         'spesialis' => 'required|string|max:255',
+        'telepon' => 'nullable|string|max:20',
+        'alamat' => 'nullable|string',
+        'biografi' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
-    $data = $request->only(['nama', 'spesialis']);
+     $data = $request->only(['nama', 'spesialis', 'telepon', 'alamat', 'biografi']);
 
     if ($request->hasFile('image')) {
         $data['image'] = $request->file('image')->store('dokter', 'public');
@@ -44,7 +47,11 @@ class DokterController extends Controller
 
     return redirect()->route('dokter.index')->with('success', 'Data dokter berhasil ditambahkan.');
 }
-
+    public function show(Dokter $dokter)
+    {
+        $dokter->load('jadwals');
+        return view('admin.dokter.show', compact('dokter'));
+    }
 
     public function edit(Dokter $dokter)
 {
@@ -58,12 +65,15 @@ class DokterController extends Controller
     $request->validate([
         'nama' => 'required|string|max:255',
         'spesialis' => 'required|string|max:255',
+        'telepon' => 'nullable|string|max:20',
+        'alamat' => 'nullable|string',
+        'biografi' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'jadwal_id' => 'nullable|array',
         'jadwal_id.*' => 'exists:jadwals,id',
     ]);
 
-    $data = $request->only(['nama','spesialis']);
+    $data = $request->only(['nama','spesialis','telepon','alamat','biografi']);
 
     if ($request->hasFile('image')) {
         if ($dokter->image) {

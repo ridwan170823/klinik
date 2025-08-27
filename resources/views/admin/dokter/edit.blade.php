@@ -81,6 +81,51 @@
     <input type="text" class="form-control" id="spesialis" name="spesialis"
            value="{{ old('spesialis', $dokter->spesialis) }}" required>
   </div>
+  
+  {{-- Tampilkan error validasi --}}
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+    </div>
+  @endif
+
+  {{-- NAMA --}}
+  <div class="form-group mb-3">
+    <label for="nama">Nama Dokter</label>
+    <input type="text" class="form-control" id="nama" name="nama"
+           value="{{ old('nama', $dokter->nama) }}" required>
+  </div>
+
+  {{-- SPESIALIS --}}
+  <div class="form-group mb-3">
+    <label for="spesialis">Spesialis</label>
+    <input type="text" class="form-control" id="spesialis" name="spesialis"
+           value="{{ old('spesialis', $dokter->spesialis) }}" required>
+  </div>
+
+  {{-- TELEPON --}}
+  <div class="form-group mb-3">
+    <label for="telepon">Telepon</label>
+    <input type="text" class="form-control" id="telepon" name="telepon"
+           value="{{ old('telepon', $dokter->telepon) }}">
+  </div>
+
+  {{-- ALAMAT --}}
+  <div class="form-group mb-3">
+    <label for="alamat">Alamat</label>
+    <input type="text" class="form-control" id="alamat" name="alamat"
+           value="{{ old('alamat', $dokter->alamat) }}">
+  </div>
+
+  {{-- BIOGRAFI --}}
+  <div class="form-group mb-3">
+    <label for="biografi">Biografi</label>
+    <textarea class="form-control" id="biografi" name="biografi" rows="3">{{ old('biografi', $dokter->biografi) }}</textarea>
+  </div>
 
   {{-- JADWAL (many-to-many) --}}
   <div class="form-group mb-3">
