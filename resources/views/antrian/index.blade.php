@@ -33,9 +33,6 @@
           @csrf
           <div class="form-row">
             <div class="col">
-              <input type="date" class="form-control" name="tanggal" required min="{{ now()->toDateString() }}" max="{{ now()->addDays((int) config('antrian.max_days_ahead'))->toDateString() }}">
-            </div>
-            <div class="col">
               <select class="form-control" name="layanan_id" id="layananSelect" required>
                 <option value="" disabled selected>Pilih Layanan</option>
                 @foreach ($layanans as $layanan)
