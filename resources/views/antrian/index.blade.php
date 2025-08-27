@@ -70,6 +70,21 @@
       </div>
       @endif
       <div class="card-body">
+        <form method="GET" action="{{ route('antrian.index') }}" class="form-inline mb-3">
+          <select name="hari" class="form-control mr-2">
+            <option value="">Semua Hari</option>
+            @foreach ($haris as $hari)
+            <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>{{ $hari }}</option>
+            @endforeach
+          </select>
+          <select name="dokter_id" class="form-control mr-2">
+            <option value="">Semua Dokter</option>
+            @foreach ($dokters as $dokter)
+            <option value="{{ $dokter->id }}" {{ $selectedDokter == $dokter->id ? 'selected' : '' }}>{{ $dokter->nama }}</option>
+            @endforeach
+          </select>
+          <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
         <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>

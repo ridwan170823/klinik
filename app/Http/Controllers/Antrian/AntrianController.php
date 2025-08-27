@@ -14,8 +14,7 @@ class AntrianController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Antrian::with(['user', 'dokter', 'jadwal'])
-            ->orderBy('nomor_antrian');
+        $query = Antrian::with(['user', 'dokter', 'jadwal']);
 
         
         $layanans = null;
@@ -23,10 +22,29 @@ class AntrianController extends Controller
             $query->where('user_id', Auth::id());
             $layanans = Layanan::all();
         }
+        if ($request->filled('dokter_id')) {
+            $query->where('dokter_id', $request->dokter_id);
+        }
+
+        if ($request->filled('hari')) {
+            $query->whereHas('jadwal', function ($q) use ($request) {
+                $q->where('hari', $request->hari);
+            });
+        }
+
+        if ($request->filled('dokter_id') || $request->filled('hari')) {
+            $query->orderBy('created_at', 'desc');
+        } else {
+            $query->orderBy('nomor_antrian');
+        }
 
         return view('antrian.index', [
             'antrians' => $query->get(),
             'layanans' => $layanans,
+            'dokters' => Dokter::all(),
+            'haris' => Jadwal::select('hari')->distinct()->pluck('hari'),
+            'selectedDokter' => $request->dokter_id,
+            'selectedHari' => $request->hari,
             'selectedLayanan' => $request->layanan_id,
         ]);
     }
