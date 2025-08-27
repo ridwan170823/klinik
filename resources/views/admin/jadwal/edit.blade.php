@@ -73,6 +73,10 @@
               @endforeach
             </select>
           </div>
+          <div class="form-group">
+            <label for="kapasitas">Kapasitas</label>
+            <input type="number" class="form-control" id="kapasitas" name="kapasitas" value="{{ old('kapasitas', $jadwal->kapasitas) }}">
+          </div>
 
           <button type="submit" class="btn btn-info">Update</button>
         </form>

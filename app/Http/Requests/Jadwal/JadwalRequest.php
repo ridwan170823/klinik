@@ -23,26 +23,27 @@ class JadwalRequest extends FormRequest
    * @return array
    */
   public function rules()
-  {
-    $slots = config('jadwal.time_slots');
-    $starts = array_column($slots, 'mulai');
-    $ends = array_column($slots, 'selesai');
-    return [
-      'hari' => 'required',
-      'waktu_mulai' => ['required', Rule::in($starts)],
-      'waktu_selesai' => [
-        'required',
-        Rule::in($ends),
-        function ($attribute, $value, $fail) use ($slots) {
-          $start = $this->input('waktu_mulai');
-          $valid = collect($slots)->contains(function ($slot) use ($start, $value) {
-            return $slot['mulai'] === $start && $slot['selesai'] === $value;
-          });
-          if (! $valid) {
-            $fail('Waktu mulai dan selesai tidak sesuai dengan slot yang diizinkan.');
-          }
-        }
-      ],
-    ];
-  }
+    {
+        $slots = config('jadwal.time_slots');
+        $starts = array_column($slots, 'mulai');
+        $ends = array_column($slots, 'selesai');
+        return [
+            'hari' => 'required',
+            'waktu_mulai' => ['required', Rule::in($starts)],
+            'waktu_selesai' => [
+                'required',
+                Rule::in($ends),
+                function ($attribute, $value, $fail) use ($slots) {
+                    $start = $this->input('waktu_mulai');
+                    $valid = collect($slots)->contains(function ($slot) use ($start, $value) {
+                        return $slot['mulai'] === $start && $slot['selesai'] === $value;
+                    });
+                    if (! $valid) {
+                        $fail('Waktu mulai dan selesai tidak sesuai dengan slot yang diizinkan.');
+                    }
+                }
+            ],
+            'kapasitas' => 'required|integer|min:1',
+        ];
+    }
 }

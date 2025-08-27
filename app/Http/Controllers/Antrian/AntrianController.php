@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Antrian;
 use App\Models\Dokter;
 use App\Models\Layanan;
+use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -61,6 +62,13 @@ class AntrianController extends Controller
             ->exists();
         if ($slotTaken) {
             return back()->withErrors(['jadwal_id' => 'Slot jadwal sudah diambil'])->withInput();
+        }
+        $kapasitas = Jadwal::find($data['jadwal_id'])->kapasitas ?? 0;
+        $current = Antrian::where('jadwal_id', $data['jadwal_id'])
+            ->whereIn('status', ['pending', 'approved'])
+            ->count();
+        if ($current >= $kapasitas) {
+            return back()->withErrors(['jadwal_id' => 'Kapasitas jadwal sudah penuh'])->withInput();
         }
 
         Antrian::create([

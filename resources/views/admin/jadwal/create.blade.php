@@ -96,6 +96,14 @@
               <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
             @enderror
           </div>
+          <!-- Kapasitas -->
+          <div class="form-group">
+            <label for="kapasitas">Kapasitas</label>
+            <input type="number" class="form-control @error('kapasitas') is-invalid @enderror" id="kapasitas" name="kapasitas" value="{{ old('kapasitas') }}">
+            @error('kapasitas')
+              <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+            @enderror
+          </div>
 
           <button type="submit" class="btn btn-info">Simpan</button>
         </form>

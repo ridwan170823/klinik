@@ -59,6 +59,7 @@
                 <th>Hari Praktek</th>
                 <th>Waktu Mulai</th>
                 <th>Waktu Selesai</th>
+                <th>Kapasitas</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -69,6 +70,7 @@
                 <td>{{ $jadwal->hari }}</td>
                 <td>{{ $jadwal->waktu_mulai }}</td>
                 <td>{{ $jadwal->waktu_selesai }}</td>
+                <td>{{ $jadwal->kapasitas }}</td>
                 <td>
                   <a href="{{ route('jadwal.edit', $jadwal->id) }}" class="btn btn-warning btn-sm">Edit</a>
                   <form action="{{ route('jadwal.destroy', $jadwal->id) }}" method="post" class="d-inline">
