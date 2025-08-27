@@ -56,11 +56,9 @@ class AntrianController extends Controller
             'layanan_id' => 'required|exists:layanans,id',
             'dokter_id' => 'required|exists:dokters,id',
             'jadwal_id' => 'required|exists:jadwals,id',
-            'tanggal' => 'required|date',
+            'tanggal' => "required|date|before_or_equal:$maxDate",
         ]);
 
-        $limit = (int) config('antrian.max_days_ahead');
-        $maxDate = now()->addDays($limit)->toDateString();
 
         $layanan = Layanan::find($data['layanan_id']);
         $dokter = $layanan?->dokters()->find($data['dokter_id']);
