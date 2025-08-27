@@ -102,6 +102,10 @@
             <i class="fas fa-user-md"></i>
             <span>Manajemen Dokter</span>
         </a>
+         <a class="nav-link" href="{{ route('pasien.index') }}">
+            <i class="fas fa-user-md"></i>
+            <span>Data User</span>
+        </a>
 
         <!-- Jadwal Dokter -->
         <a class="nav-link" href="{{ route('jadwal.index') }}">

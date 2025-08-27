@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\PasienController as AdminPasienController;
 use App\Http\Controllers\Dokter\DokterController;
 use App\Http\Controllers\Obat\ObatController;
 use App\Http\Controllers\Jadwal\JadwalController;
@@ -46,9 +47,12 @@ Route::prefix('dokter')->middleware('checkRole:dokter,admin')->group(function ()
     Route::delete('/{dokter}', [DokterController::class, 'destroy'])->name('dokter.destroy');
 });
 
-// Pasien CRUD
-Route::resource('pasien', PasienController::class)
-    ->middleware('checkRole:dokter,pasien,admin');
+// // Pasien CRUD
+// Route::resource('pasien', PasienController::class)
+//     ->middleware('checkRole:dokter,pasien,admin');
+//     // Admin Pasien CRUD
+Route::resource('pasien', AdminPasienController::class)
+    ->middleware('checkRole:admin');
 
 // Admin CRUD
 Route::resource('admin', AdminController::class)
