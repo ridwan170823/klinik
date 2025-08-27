@@ -146,11 +146,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   dokterSelect.addEventListener('change', function () {
     const dokterId = this.value;
-    jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
     jadwalSelect.disabled = true;
+    jadwalSelect.innerHTML = '';
     fetch(`/dokters/${dokterId}/jadwals`)
       .then(res => res.json())
       .then(jadwals => {
+        jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
         jadwals.forEach(j => {
           const opt = document.createElement('option');
           opt.value = j.id;
