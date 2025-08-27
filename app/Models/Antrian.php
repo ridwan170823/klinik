@@ -38,4 +38,8 @@ class Antrian extends Model
     {
         return $this->belongsTo(Layanan::class);
     }
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
 }

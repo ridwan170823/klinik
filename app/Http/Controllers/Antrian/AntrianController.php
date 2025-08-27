@@ -100,7 +100,7 @@ class AntrianController extends Controller
             return back()->withErrors(['jadwal_id' => 'Kapasitas jadwal sudah penuh'])->withInput();
         }
 
-        Antrian::create([
+        $antrian = Antrian::create([
             'user_id' => Auth::id(),
             'layanan_id' => $data['layanan_id'],
             'dokter_id' => $data['dokter_id'],
@@ -109,7 +109,7 @@ class AntrianController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('antrian.index');
+        return redirect()->route('payments.create', $antrian);
     }
 
     public function destroy(Antrian $antrian)

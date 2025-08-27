@@ -8,6 +8,7 @@ use App\Http\Controllers\Jadwal\JadwalController;
 use App\Http\Controllers\Layanan\LayananController;
 use App\Http\Controllers\Pasien\PasienController;
 use App\Http\Controllers\Antrian\AntrianController;
+use App\Http\Controllers\PaymentsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -88,4 +89,11 @@ Route::get('layanans/{layanan}/dokters', [AntrianController::class, 'dokters'])
     ->middleware('checkRole:pasien');
 Route::get('dokters/{dokter}/jadwals', [AntrianController::class, 'jadwals'])
     ->name('dokter.jadwals')
+    ->middleware('checkRole:pasien');
+
+Route::get('payments/{antrian}/create', [PaymentsController::class, 'create'])
+    ->name('payments.create')
+    ->middleware('checkRole:pasien');
+Route::post('payments/{antrian}', [PaymentsController::class, 'store'])
+    ->name('payments.store')
     ->middleware('checkRole:pasien');
