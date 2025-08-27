@@ -56,6 +56,7 @@ class AntrianController extends Controller
             'layanan_id' => 'required|exists:layanans,id',
             'dokter_id' => 'required|exists:dokters,id',
             'jadwal_id' => 'required|exists:jadwals,id',
+            'tanggal' => 'required|date',
         ]);
 
         $limit = (int) config('antrian.max_days_ahead');
@@ -73,10 +74,19 @@ class AntrianController extends Controller
         if ($hasActive) {
             return back()->withErrors(['layanan_id' => 'Anda sudah memiliki antrian aktif']);
         }
+        $duplicate = Antrian::where('user_id', Auth::id())
+            ->where('dokter_id', $data['dokter_id'])
+            ->whereDate('tanggal', $data['tanggal'])
+            ->whereIn('status', ['pending', 'approved'])
+            ->exists();
+        if ($duplicate) {
+            return back()->withErrors(['tanggal' => 'Anda sudah memiliki antrian dengan dokter ini pada tanggal tersebut'])
+                ->withInput();
+        }
 
         $slotTaken = Antrian::where('dokter_id', $data['dokter_id'])
             ->where('jadwal_id', $data['jadwal_id'])
-            // ->whereDate('tanggal', $data['tanggal'])
+            ->whereDate('tanggal', $data['tanggal'])
             ->whereIn('status', ['pending', 'approved'])
             ->exists();
         if ($slotTaken) {
@@ -95,7 +105,7 @@ class AntrianController extends Controller
             'layanan_id' => $data['layanan_id'],
             'dokter_id' => $data['dokter_id'],
             'jadwal_id' => $data['jadwal_id'],
-            // 'tanggal' => $data['tanggal'],
+            'tanggal' => $data['tanggal'],
             'status' => 'pending',
         ]);
 
