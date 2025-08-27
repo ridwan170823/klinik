@@ -70,7 +70,7 @@ Route::get('antrian', [AntrianController::class, 'index'])
     ->middleware('checkRole:admin,pasien');
 Route::post('antrian', [AntrianController::class, 'store'])
     ->name('antrian.store')
-    ->middleware('checkRole:pasien');
+    ->middleware(['checkRole:pasien', 'profile.complete']);
 Route::delete('antrian/{antrian}', [AntrianController::class, 'destroy'])
     ->name('antrian.destroy')
     ->middleware('checkRole:admin');
