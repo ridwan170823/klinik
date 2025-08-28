@@ -154,16 +154,16 @@ class AntrianController extends Controller
         );
     }
 
-    public function jadwals(Dokter $dokter, $layananId)
+   public function jadwals(Dokter $dokter, Layanan $layanan)
     {
         $taken = Antrian::where('dokter_id', $dokter->id)
             ->whereIn('status', ['pending', 'approved'])
             ->pluck('jadwal_id');
             $jadwals = $dokter->layanans()
-            ->where('dokter_layanan.layanan_id', $layananId)
+             ->where('dokter_layanan.layanan_id', $layanan->id)
             ->join('jadwals', 'dokter_layanan.jadwal_id', '=', 'jadwals.id')
             ->where('jadwals.is_available', true)
-                >whereNotIn('jadwals.id', $taken)
+                 ->whereNotIn('jadwals.id', $taken)
             ->select(
                 'jadwals.id',
                 'jadwals.hari',
