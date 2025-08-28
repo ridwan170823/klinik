@@ -80,7 +80,7 @@ Route::resource('layanan', LayananController::class)
 Route::get('antrian', [AntrianController::class, 'index'])
     ->name('antrian.index')
     ->middleware('checkRole:admin,pasien');
-    Route::get('antrian/history', [AntrianController::class, 'history'])
+     Route::get('antrian/history', [AntrianController::class, 'patientHistory'])
     ->name('antrian.history')
     ->middleware('checkRole:pasien');
 Route::post('antrian', [AntrianController::class, 'store'])
@@ -92,6 +92,9 @@ Route::delete('antrian/{antrian}', [AntrianController::class, 'destroy'])
 Route::patch('antrian/{antrian}/approve', [AntrianController::class, 'approve'])
     ->name('antrian.approve')
     ->middleware('checkRole:admin');
+Route::get('/admin/antrian/history', [AntrianController::class, 'history'])
+    ->name('admin.antrian.history')
+    ->middleware(['checkRole:admin']);
 
 // Ajax endpoints for dependent dropdowns
 Route::get('layanans/{layanan}/dokters', [AntrianController::class, 'dokters'])

@@ -65,7 +65,7 @@ class AntrianController extends Controller
         if (! $dokter) {
             return back()->withErrors(['dokter_id' => 'Dokter tidak tersedia untuk layanan ini']);
         }
-        
+            
         $duplicate = Antrian::where('user_id', Auth::id())
             ->where('dokter_id', $data['dokter_id'])
             ->where('jadwal_id', $data['jadwal_id'])
@@ -122,7 +122,7 @@ class AntrianController extends Controller
         }
         return redirect()->route('antrian.index');
     }
-    public function history()
+    public function patientHistory()
     {
         $antrians = Antrian::with(['dokter', 'jadwal'])
             ->where('user_id', Auth::id())
@@ -130,6 +130,17 @@ class AntrianController extends Controller
             ->get();
 
         return view('antrian.history', [
+            'antrians' => $antrians,
+        ]);
+    }
+     public function history()
+    {
+        $antrians = Antrian::with(['user', 'dokter', 'jadwal'])
+            ->whereIn('status', ['pending', 'approved'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('admin.antrian.history', [
             'antrians' => $antrians,
         ]);
     }

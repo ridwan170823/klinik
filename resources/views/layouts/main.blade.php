@@ -103,6 +103,12 @@
           <i class="fas fa-user-plus"></i></fas>
           <span>Daftar Antrian</span>
         </a>
+        <!-- Add this block -->
+        <a class="nav-link" href="{{ route('admin.antrian.history') }}">
+            <i class="fas fa-history"></i>
+            <span>Riwayat Antrian</span>
+        </a>
+        <!-- end add -->
         <!-- Manajemen Dokter -->
         <a class="nav-link" href="{{ route('dokter.index') }}">
             <i class="fas fa-user-md"></i>
