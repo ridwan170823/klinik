@@ -65,21 +65,17 @@ class AntrianController extends Controller
         if (! $dokter) {
             return back()->withErrors(['dokter_id' => 'Dokter tidak tersedia untuk layanan ini']);
         }
-
-        $hasActive = Antrian::where('user_id', Auth::id())
-            ->whereIn('status', ['pending', 'approved'])
-            ->exists();
-        if ($hasActive) {
-            return back()->withErrors(['layanan_id' => 'Anda sudah memiliki antrian aktif']);
-        }
+        
         $duplicate = Antrian::where('user_id', Auth::id())
             ->where('dokter_id', $data['dokter_id'])
+            ->where('jadwal_id', $data['jadwal_id'])
             ->whereDate('tanggal', $data['tanggal'])
             ->whereIn('status', ['pending', 'approved'])
             ->exists();
         if ($duplicate) {
-            return back()->withErrors(['tanggal' => 'Anda sudah memiliki antrian dengan dokter ini pada tanggal tersebut'])
-                ->withInput();
+            return back()->withErrors([
+                'tanggal' => 'Anda sudah memiliki antrian dengan dokter dan jadwal ini pada tanggal tersebut',
+            ])->withInput();
         }
 
         $slotTaken = Antrian::where('dokter_id', $data['dokter_id'])
