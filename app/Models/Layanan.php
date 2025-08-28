@@ -9,7 +9,7 @@ class Layanan extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = ['nama', 'harga'];
 
     public function dokters()
     {

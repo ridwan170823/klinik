@@ -41,10 +41,11 @@
 
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h5 class="font-weight-bold text-primary">Tambah layanan</h5>
+        <h5 class="font-weight-bold text-primary">Edit layanan</h5>
       </div>
       <div class="card-body">
-        <form method="POST" action="{{ route('layanan.store') }}">
+        <form method="POST" action="{{ route('layanan.update', $layanan->id) }}">
+  @method('PUT')
   @csrf
 
   <!-- Nama Layanan -->
@@ -54,7 +55,7 @@
            class="form-control @error('nama') is-invalid @enderror"
            id="nama"
            name="nama"
-           value="{{ old('nama') }}"
+           value="{{ old('nama', $layanan->nama) }}"
            placeholder="Contoh: Konsultasi Umum" required>
     @error('nama')
       <span class="invalid-feedback" role="alert">
@@ -62,6 +63,7 @@
       </span>
     @enderror
   </div>
+
   <!-- Harga Layanan -->
   <div class="form-group mb-3">
     <label for="harga">Harga</label>
@@ -69,7 +71,7 @@
            class="form-control @error('harga') is-invalid @enderror"
            id="harga"
            name="harga"
-           value="{{ old('harga') }}"
+           value="{{ old('harga', $layanan->harga) }}"
            placeholder="Masukkan harga" required>
     @error('harga')
       <span class="invalid-feedback" role="alert">
@@ -78,7 +80,7 @@
     @enderror
   </div>
 
-  <button type="submit" class="btn btn-info">Simpan</button>
+  <button type="submit" class="btn btn-info">Update</button>
   <a href="{{ route('layanan.index') }}" class="btn btn-secondary">Batal</a>
 </form>
 

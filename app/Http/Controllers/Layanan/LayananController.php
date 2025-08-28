@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Layanan;
 use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Dokter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Layanan\layananRequest;
 
@@ -37,8 +38,8 @@ class layananController extends Controller
      */
     public function create()
     {
-        // Ambil semua dokter untuk dropdown
-        $layanans = Layanan::all();
+        // // Ambil semua dokter untuk dropdown
+        // $layanans = Layanan::all();
 
         return view('admin.layanan.create');
     }
@@ -65,9 +66,9 @@ class layananController extends Controller
      */
     public function edit(Layanan $layanan)
     {
-        $layanans = Dokter::all();
+        $dokters = Dokter::all();
 
-        return view('admin.layanan.edit', compact('layanan', 'layanans'));
+        return view('admin.layanan.edit', compact('layanan', 'dokters'));
     }
 
     /**

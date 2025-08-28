@@ -37,7 +37,7 @@
               <select class="form-control" name="layanan_id" id="layananSelect" required>
                 <option value="" disabled selected>Pilih Layanan</option>
                 @foreach ($layanans as $layanan)
-                <option value="{{ $layanan->id }}">{{ $layanan->nama }}</option>
+               <option value="{{ $layanan->id }}">{{ $layanan->nama }} - Rp{{ number_format($layanan->harga) }}</option>
                 @endforeach
               </select>
             </div>

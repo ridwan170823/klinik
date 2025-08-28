@@ -118,7 +118,7 @@ class AntrianController extends Controller
                 'status' => 'approved',
                 'nomor_antrian' => $last + 1,
             ]);
-            $antrian->user->notify(new NomorAntrianAssigned($antrian));
+            // $antrian->user->notify(new NomorAntrianAssigned($antrian));
         }
         return redirect()->route('antrian.index');
     }

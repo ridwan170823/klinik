@@ -22,9 +22,11 @@ class LayananRequest extends FormRequest
    * @return array
    */
   public function rules()
-  {
-    return [
-      'nama' => 'required',
+    {
+        return [
+      'nama'  => 'required',
+      'harga' => 'required|numeric|min:0',
     ];
   }
-}
+    }
+
