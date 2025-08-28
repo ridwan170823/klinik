@@ -90,11 +90,8 @@ class AntrianController extends Controller
         if ($slotTaken) {
             return back()->withErrors(['jadwal_id' => 'Slot jadwal sudah diambil'])->withInput();
         }
-        $kapasitas = Jadwal::find($data['jadwal_id'])->kapasitas ?? 0;
-        $current = Antrian::where('jadwal_id', $data['jadwal_id'])
-            ->whereIn('status', ['pending', 'approved'])
-            ->count();
-        if ($current >= $kapasitas) {
+        $ $jadwal = Jadwal::find($data['jadwal_id']);
+        if (! $jadwal || $jadwal->kapasitas <= 0) {
             return back()->withErrors(['jadwal_id' => 'Kapasitas jadwal sudah penuh'])->withInput();
         }
 
@@ -106,12 +103,13 @@ class AntrianController extends Controller
             'tanggal' => $data['tanggal'],
             'status' => 'pending',
         ]);
-
+             $jadwal->decrement('kapasitas');
         return redirect()->route('payments.create', $antrian);
     }
 
     public function destroy(Antrian $antrian)
-    {
+    {   
+        $antrian->jadwal?->increment('kapasitas');
         $antrian->delete();
         return redirect()->route('antrian.index');
     }
