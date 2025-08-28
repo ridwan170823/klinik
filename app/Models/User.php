@@ -50,5 +50,8 @@ class User extends Authenticatable
   {
     return $this->hasMany(Antrian::class);
   }
-
+  public function routeNotificationForWhatsApp()
+  {
+    return $this->no_telp;
+  }
 }

@@ -6,6 +6,7 @@ use App\Models\Antrian;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Notifications\Channels\WhatsAppChannel;
 
 class NomorAntrianAssigned extends Notification
 {
@@ -20,7 +21,7 @@ class NomorAntrianAssigned extends Notification
 
     public function via($notifiable)
     {
-        return ['mail'];
+       return ['mail', WhatsAppChannel::class];
     }
 
     public function toMail($notifiable)
@@ -30,6 +31,11 @@ class NomorAntrianAssigned extends Notification
             ->line('Nomor antrian Anda telah disetujui.')
             ->line('Nomor antrian: ' . $this->antrian->nomor_antrian)
             ->line('Terima kasih telah menggunakan layanan kami.');
+    }
+    public function toWhatsApp($notifiable)
+    {
+        return 'Nomor antrian Anda telah disetujui. Nomor antrian: '
+            . $this->antrian->nomor_antrian;
     }
 
     public function toArray($notifiable)
