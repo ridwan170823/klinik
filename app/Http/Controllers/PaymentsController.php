@@ -41,8 +41,17 @@ class PaymentsController extends Controller
             ]);
         }
 
-        $antrian->update(['status' => 'paid']);
+        if (! $antrian->nomor_antrian) {
+            $last = Antrian::max('nomor_antrian') ?? 0;
+            $antrian->nomor_antrian = $last + 1;
+        }
 
-        return redirect()->route('antrian.index')->with('success', 'Payment successful.');
+        $antrian->status = 'approved';
+        $antrian->save();
+
+        // $antrian->user->notify(new NomorAntrianAssigned($antrian));
+
+        return redirect()->route('antrian.index')
+            ->with('success', 'Pembayaran berhasil, nomor antrian Anda ' . $antrian->nomor_antrian . '.');
     }
 }

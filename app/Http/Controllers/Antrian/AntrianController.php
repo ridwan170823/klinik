@@ -99,8 +99,9 @@ class AntrianController extends Controller
             'tanggal' => $data['tanggal'],
             'status' => 'pending',
         ]);
-             $jadwal->decrement('kapasitas');
-        return redirect()->route('payments.create', $antrian);
+            $jadwal->decrement('kapasitas');
+
+        return redirect()->route('antrian.index');
     }
 
     public function destroy(Antrian $antrian)
