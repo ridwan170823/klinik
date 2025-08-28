@@ -90,7 +90,7 @@ class AntrianController extends Controller
         if ($slotTaken) {
             return back()->withErrors(['jadwal_id' => 'Slot jadwal sudah diambil'])->withInput();
         }
-        $ $jadwal = Jadwal::find($data['jadwal_id']);
+         $jadwal = Jadwal::find($data['jadwal_id']);
         if (! $jadwal || $jadwal->kapasitas <= 0) {
             return back()->withErrors(['jadwal_id' => 'Kapasitas jadwal sudah penuh'])->withInput();
         }

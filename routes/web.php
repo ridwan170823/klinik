@@ -74,7 +74,8 @@ Route::resource('layanan', LayananController::class)
     ->middleware('checkRole:dokter,admin');
     
     Route::resource('dokter-layanan', DokterLayananController::class)
-    ->middleware('checkRole:admin');
+    ->names('dokter_layanan')
+    ->middleware('checkRole:dokter,admin');
 // Antrian routes
 Route::get('antrian', [AntrianController::class, 'index'])
     ->name('antrian.index')
@@ -95,10 +96,10 @@ Route::patch('antrian/{antrian}/approve', [AntrianController::class, 'approve'])
 // Ajax endpoints for dependent dropdowns
 Route::get('layanans/{layanan}/dokters', [AntrianController::class, 'dokters'])
     ->name('layanan.dokters')
-    ->middleware('checkRole:pasien');
+    ->middleware('checkRole:admin,pasien');
 Route::get('dokters/{dokter}/jadwals', [AntrianController::class, 'jadwals'])
     ->name('dokter.jadwals')
-    ->middleware('checkRole:pasien');
+    ->middleware('checkRole:admin,pasien');
 
 Route::get('payments/{antrian}/create', [PaymentsController::class, 'create'])
     ->name('payments.create')

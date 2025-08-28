@@ -131,49 +131,95 @@
   </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   const layananSelect = document.getElementById('layananSelect');
-  const dokterSelect = document.getElementById('dokterSelect');
-  const jadwalSelect = document.getElementById('jadwalSelect');
-  if (!layananSelect) return;
+  const dokterSelect  = document.getElementById('dokterSelect');
+  const jadwalSelect  = document.getElementById('jadwalSelect');
 
-  layananSelect.addEventListener('change', function () {
+  if (!layananSelect || !dokterSelect || !jadwalSelect) return;
+
+  // Helpers
+  const setPlaceholder = (select, text) => {
+    select.innerHTML = '';
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.disabled = true;
+    opt.selected = true;
+    opt.textContent = text;
+    select.appendChild(opt);
+  };
+
+  const fillOptions = (select, items, labelFn) => {
+    items.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = labelFn(item);
+      select.appendChild(opt);
+    });
+  };
+
+  const fetchJson = async (url) => {
+    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return res.json();
+  };
+
+  // State awal
+  setPlaceholder(dokterSelect, 'Pilih Dokter');
+  setPlaceholder(jadwalSelect, 'Pilih Jadwal');
+  dokterSelect.disabled = true;
+  jadwalSelect.disabled = true;
+
+  // Ketika pilih Layanan
+  layananSelect.addEventListener('change', async function () {
     const layananId = this.value;
-    dokterSelect.innerHTML = '<option value="" disabled selected>Pilih Dokter</option>';
-    jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
+
+    setPlaceholder(dokterSelect, 'Memuat daftar dokter…');
+    setPlaceholder(jadwalSelect, 'Pilih Jadwal');
     dokterSelect.disabled = true;
     jadwalSelect.disabled = true;
 
-    fetch(`/layanans/${layananId}/dokters`)
-      .then(res => res.json())
-      .then(dokters => {
-        dokters.forEach(d => {
-          const opt = document.createElement('option');
-          opt.value = d.id;
-          const imgSrc = d.image || '/img/undraw_profile.svg';
-          opt.innerHTML = `<img src="${imgSrc}" alt="${d.nama}" width="30" height="30" class="rounded-circle mr-2"> ${d.nama} - ${d.spesialis}`;
-          dokterSelect.appendChild(opt);
-        });
+    try {
+      const dokters = await fetchJson(`/layanans/${encodeURIComponent(layananId)}/dokters`);
+
+      setPlaceholder(dokterSelect, dokters.length ? 'Pilih Dokter' : 'Dokter tidak tersedia');
+      if (dokters.length) {
+        fillOptions(dokterSelect, dokters, d => `${d.nama} — ${d.spesialis || 'Umum'}`);
         dokterSelect.disabled = false;
-      });
+      } else {
+        dokterSelect.disabled = true;
+      }
+    } catch (err) {
+      setPlaceholder(dokterSelect, 'Gagal memuat dokter');
+      dokterSelect.disabled = true;
+      console.error(err);
+    }
   });
-  dokterSelect.addEventListener('change', function () {
+
+  // Ketika pilih Dokter
+  dokterSelect.addEventListener('change', async function () {
     const dokterId = this.value;
+
+    setPlaceholder(jadwalSelect, 'Memuat jadwal…');
     jadwalSelect.disabled = true;
-    jadwalSelect.innerHTML = '';
-    fetch(`/dokters/${dokterId}/jadwals`)
-      .then(res => res.json())
-      .then(jadwals => {
-        jadwalSelect.innerHTML = '<option value="" disabled selected>Pilih Jadwal</option>';
-        jadwals.forEach(j => {
-          const opt = document.createElement('option');
-          opt.value = j.id;
-          opt.text = `${j.hari} (${j.waktu_mulai} - ${j.waktu_selesai})`;
-          jadwalSelect.appendChild(opt);
-        });
+
+    try {
+      const jadwals = await fetchJson(`/dokters/${encodeURIComponent(dokterId)}/jadwals`);
+
+      setPlaceholder(jadwalSelect, jadwals.length ? 'Pilih Jadwal' : 'Jadwal tidak tersedia');
+      if (jadwals.length) {
+        fillOptions(jadwalSelect, jadwals, j => `${j.hari} (${j.waktu_mulai} - ${j.waktu_selesai})`);
         jadwalSelect.disabled = false;
-      });
+      } else {
+        jadwalSelect.disabled = true;
+      }
+    } catch (err) {
+      setPlaceholder(jadwalSelect, 'Gagal memuat jadwal');
+      jadwalSelect.disabled = true;
+      console.error(err);
+    }
   });
 });
 </script>
+
   @endsection
