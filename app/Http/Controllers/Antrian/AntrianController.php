@@ -128,6 +128,17 @@ class AntrianController extends Controller
         }
         return redirect()->route('antrian.index');
     }
+    public function history()
+    {
+        $antrians = Antrian::with(['dokter', 'jadwal'])
+            ->where('user_id', Auth::id())
+            ->orderByDesc('created_at')
+            ->get();
+
+        return view('antrian.history', [
+            'antrians' => $antrians,
+        ]);
+    }
     public function dokters(Layanan $layanan)
     {
         return response()->json(

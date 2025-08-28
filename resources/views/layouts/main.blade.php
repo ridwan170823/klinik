@@ -87,6 +87,12 @@
           <span>Antrian</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('antrian.history') }}">
+          <i class="fas fa-history"></i>
+          <span>Riwayat Antrian</span>
+        </a>
+      </li>
       @endif
 
       @if (Auth::user()->role == 'admin')

@@ -75,6 +75,9 @@ Route::resource('layanan', LayananController::class)
 Route::get('antrian', [AntrianController::class, 'index'])
     ->name('antrian.index')
     ->middleware('checkRole:admin,pasien');
+    Route::get('antrian/history', [AntrianController::class, 'history'])
+    ->name('antrian.history')
+    ->middleware('checkRole:pasien');
 Route::post('antrian', [AntrianController::class, 'store'])
     ->name('antrian.store')
     ->middleware(['checkRole:pasien', 'profile.complete']);
