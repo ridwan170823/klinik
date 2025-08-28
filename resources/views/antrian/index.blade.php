@@ -181,10 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const dokters = await fetchJson(`/layanans/${encodeURIComponent(layananId)}/dokters`);
+      const uniqueDokters = dokters.filter((d, i, arr) =>
+        arr.findIndex(x => x.id === d.id) === i
+      );
 
-      setPlaceholder(dokterSelect, dokters.length ? 'Pilih Dokter' : 'Dokter tidak tersedia');
-      if (dokters.length) {
-        fillOptions(dokterSelect, dokters, d => `${d.nama} — ${d.spesialis || 'Umum'}`);
+      setPlaceholder(dokterSelect, uniqueDokters.length ? 'Pilih Dokter' : 'Dokter tidak tersedia');
+      if (uniqueDokters.length) {
+        fillOptions(dokterSelect, uniqueDokters, d => `${d.nama} — ${d.spesialis || 'Umum'}`);
         dokterSelect.disabled = false;
       } else {
         dokterSelect.disabled = true;

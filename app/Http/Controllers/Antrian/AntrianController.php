@@ -142,6 +142,7 @@ class AntrianController extends Controller
         return response()->json(
           $layanan->dokters()
                 ->select('dokters.id', 'dokters.nama', 'dokters.image', 'dokters.spesialis')
+                ->distinct()
                 ->get()
                 ->map(function ($dokter) {
                     $dokter->image = $dokter->image
