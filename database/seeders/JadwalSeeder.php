@@ -13,6 +13,7 @@ class JadwalSeeder extends Seeder
         $sessions = [
             ['mulai' => '08:00', 'selesai' => '09:00', 'available' => true],
             ['mulai' => '09:00', 'selesai' => '10:00', 'available' => true],
+            ['mulai' => '10:00', 'selesai' => '11:00', 'available' => true],
             ['mulai' => '11:00', 'selesai' => '12:00', 'available' => true],
             ['mulai' => '12:00', 'selesai' => '13:00', 'available' => false], // break
             ['mulai' => '13:00', 'selesai' => '14:00', 'available' => true],

@@ -32,6 +32,7 @@
         <form method="POST" action="{{ route('antrian.store') }}">
           @csrf
           <div class="form-row">
+            
             <div class="col">
               <select class="form-control" name="layanan_id" id="layananSelect" required>
                 <option value="" disabled selected>Pilih Layanan</option>
