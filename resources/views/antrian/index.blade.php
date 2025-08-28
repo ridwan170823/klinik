@@ -201,13 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Ketika pilih Dokter
   dokterSelect.addEventListener('change', async function () {
-    const dokterId = this.value;
+    const dokterId  = this.value;
+    const layananId = layananSelect.value;
 
     setPlaceholder(jadwalSelect, 'Memuat jadwal…');
     jadwalSelect.disabled = true;
 
     try {
-      const jadwals = await fetchJson(`/dokters/${encodeURIComponent(dokterId)}/jadwals`);
+      const jadwals = await fetchJson(`/dokters/${encodeURIComponent(dokterId)}/layanans/${encodeURIComponent(layananId)}/jadwals`);
 
       setPlaceholder(jadwalSelect, jadwals.length ? 'Pilih Jadwal' : 'Jadwal tidak tersedia');
       if (jadwals.length) {

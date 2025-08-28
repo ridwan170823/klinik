@@ -97,7 +97,7 @@ Route::patch('antrian/{antrian}/approve', [AntrianController::class, 'approve'])
 Route::get('layanans/{layanan}/dokters', [AntrianController::class, 'dokters'])
     ->name('layanan.dokters')
     ->middleware('checkRole:admin,pasien');
-Route::get('dokters/{dokter}/jadwals', [AntrianController::class, 'jadwals'])
+Route::get('dokters/{dokter}/layanans/{layanan}/jadwals', [AntrianController::class, 'jadwals'])
     ->name('dokter.jadwals')
     ->middleware('checkRole:admin,pasien');
 
