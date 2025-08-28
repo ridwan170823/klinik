@@ -27,6 +27,7 @@ class NomorAntrianAssigned extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->from(config('mail.from.address'), config('mail.from.name'))
             ->subject('Nomor Antrian Disetujui')
             ->line('Nomor antrian Anda telah disetujui.')
             ->line('Nomor antrian: ' . $this->antrian->nomor_antrian)
