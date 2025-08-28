@@ -123,6 +123,10 @@
             <i class="fas fa-calendar-alt"></i>
             <span>Manajemen Layanan</span>
         </a>
+        <a class="nav-link" href="{{ route('dokter-layanan.index') }}">
+            <i class="fas fa-link"></i>
+            <span>Relasi Dokter-Layanan</span>
+        </a>
       </li>
       
       @endif

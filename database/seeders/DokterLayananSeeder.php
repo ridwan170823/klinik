@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Dokter;
+use App\Models\Jadwal;
 use App\Models\Layanan;
 
 class DokterLayananSeeder extends Seeder
@@ -19,10 +20,12 @@ class DokterLayananSeeder extends Seeder
         $layanan = Layanan::firstOrCreate([
             'nama' => 'Konsultasi',
         ]);
+        $jadwal = Jadwal::first();
 
         DB::table('dokter_layanan')->insert([
             'dokter_id' => $dokter->id,
             'layanan_id' => $layanan->id,
+            'jadwal_id' => $jadwal?->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

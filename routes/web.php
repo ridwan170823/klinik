@@ -8,6 +8,7 @@ use App\Http\Controllers\Jadwal\JadwalController;
 use App\Http\Controllers\Layanan\LayananController;
 use App\Http\Controllers\Pasien\PasienController;
 use App\Http\Controllers\Antrian\AntrianController;
+use App\Http\Controllers\DokterLayanan\DokterLayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentsController;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,9 @@ Route::resource('jadwal', JadwalController::class)
     // Jadwal CRUD
 Route::resource('layanan', LayananController::class)
     ->middleware('checkRole:dokter,admin');
+    
+    Route::resource('dokter-layanan', DokterLayananController::class)
+    ->middleware('checkRole:admin');
 // Antrian routes
 Route::get('antrian', [AntrianController::class, 'index'])
     ->name('antrian.index')

@@ -13,6 +13,8 @@ class Layanan extends Model
 
     public function dokters()
     {
-       return $this->belongsToMany(Dokter::class, 'dokter_layanan');
+       return $this->belongsToMany(Dokter::class, 'dokter_layanan')
+            ->withPivot('jadwal_id')
+            ->withTimestamps();
     }
 }
