@@ -57,6 +57,7 @@ Route::resource('pasien', AdminPasienController::class)
 
 // Admin CRUD
 Route::resource('admin', AdminController::class)
+    ->names('admin.pasien')
     ->middleware('checkRole:admin');
 
 // Obat CRUD

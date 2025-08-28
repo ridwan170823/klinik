@@ -58,8 +58,8 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Action</h6>
-            <a class="collapse-item" href="{{ route('dokter.index') }}">Daftar Pasien</a>
-            <a class="collapse-item" href="{{ route('dokter.create') }}">Tambah Pasien</a>
+            <a class="collapse-item" href="{{ route('pasien.index') }}">Daftar Pasien</a>
+            <a class="collapse-item" href="{{ route('pasien.create') }}">Tambah Pasien</a>
           </div>
         </div>
       </li>
