@@ -56,7 +56,7 @@ class AntrianController extends Controller
             'layanan_id' => 'required|exists:layanans,id',
             'dokter_id' => 'required|exists:dokters,id',
             'jadwal_id' => 'required|exists:jadwals,id',
-            'tanggal' => "required|date|before_or_equal:$maxDate",
+            'tanggal' => "required|date",
         ]);
 
 
@@ -124,7 +124,7 @@ class AntrianController extends Controller
                 'status' => 'approved',
                 'nomor_antrian' => $last + 1,
             ]);
-             $antrian->user->notify(new NomorAntrianAssigned($antrian));
+            //  $antrian->user->notify(new NomorAntrianAssigned($antrian));
         }
         return redirect()->route('antrian.index');
     }
