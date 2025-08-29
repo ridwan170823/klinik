@@ -29,9 +29,10 @@
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('home') }}">
         <div class="sidebar-brand-icon">
-          <i class="fas fa-hospital-user"></i>
+       <img src="{{ asset('img/hospital.jpg') }}" alt="Logo Klinik" style="width: 70px; height: auto;">
+
         </div>
-        <div class="sidebar-brand-text mx-3">Klinik Gigi<sup></sup></div>
+        <div class="sidebar-brand-text mx-2">Klinik Gigi Nara<sup></sup></div>
       </a>
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
