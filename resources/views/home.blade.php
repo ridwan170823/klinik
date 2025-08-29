@@ -70,7 +70,7 @@
             <div class="row no-gutters align-items-center">
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                  Jumlah Pasien
+                  Jumlah Antrian
                 </div>
                 @if (Auth::user()->role == 'dokter' && $perjanjians->count())
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -78,11 +78,11 @@
                 </div>
                 @elseif (Auth::user()->role == 'admin')
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ $pasien }}
+                  {{ $antrian }}
                 </div>
                 @else
                 <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ $pasien }}
+                  {{ $antrian }}
                 </div>
                 @endif
               </div>
@@ -103,7 +103,7 @@
                 </div>
                 <div class="row no-gutters align-items-center">
                   <div class="col-auto">
-                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $obat }}</div>
+                   
                   </div>
                   <div class="col">
 
