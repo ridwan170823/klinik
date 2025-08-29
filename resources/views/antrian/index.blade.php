@@ -92,7 +92,9 @@
                 <th>Dokter</th>
                 <th>Jadwal</th>
                 <th>Status</th>
+                @if (Auth::user()->role == 'admin')
                 <th>Aksi</th>
+                @endif
               </tr>
             </thead>
             <tbody>
@@ -102,29 +104,23 @@
                 <td>{{ $antrian->user->name }}</td>
                 <td>{{ $antrian->dokter->nama }}</td>
                 <td>{{ $antrian->jadwal->hari }} {{ $antrian->jadwal->waktu_mulai }}-{{ $antrian->jadwal->waktu_selesai }}</td>
-                <td>{{ ucfirst($antrian->status) }}</td>             
+                <td>{{ ucfirst($antrian->status) }}</td>
+                @if (Auth::user()->role == 'admin')
                 <td>
-                  @if ($antrian->status === 'pending' && Auth::user()->role == 'pasien')
-                  <a href="{{ route('payments.create', $antrian->id) }}" class="btn btn-primary btn-sm">Bayar</a>
-                  @endif
-
-                  @if (Auth::user()->role == 'admin')
-                    @if ($antrian->status === 'pending')
-                    <form action="{{ route('antrian.approve', $antrian->id) }}" method="POST" class="d-inline">
-                      @csrf
-                      @method('PATCH')
-                      <button type="submit" class="btn btn-success btn-sm">Setujui</button>
-                    </form>
-                    @endif
-                    <form action="{{ route('antrian.destroy', $antrian->id) }}" method="POST" class="d-inline">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                    </form>
-                  @endif
+                  @if ($antrian->status === 'pending')
+                  <form action="{{ route('antrian.approve', $antrian->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('PATCH')
+                    <button type="submit" class="btn btn-success btn-sm">Setujui</button>
+                  </form>             
+                     @endif
+                  <form action="{{ route('antrian.destroy', $antrian->id) }}" method="POST" class="d-inline">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                  </form>
                 </td>
-             
-              </tr>
+                @endif
               @endforeach
             </tbody>
           </table>
