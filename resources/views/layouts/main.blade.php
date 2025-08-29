@@ -80,7 +80,19 @@
       @endif
 
       @if (Auth::user()->role == 'pasien')
-      
+
+      @php
+          $incomplete = empty(Auth::user()->alamat) || empty(Auth::user()->no_telp);
+      @endphp
+      @if ($incomplete)
+      <li class="nav-item">
+        <a class="nav-link" href="{{ route('profile.edit') }}">
+          <i class="fas fa-user-edit"></i>
+          <span>Lengkapi Profil</span>
+        </a>
+      </li>
+      @else
+
       <li class="nav-item">
         <a class="nav-link" href="{{ route('antrian.index') }}">
           <i class="fas fa-list-ol"></i>
@@ -93,6 +105,7 @@
           <span>Riwayat Antrian</span>
         </a>
       </li>
+      @endif
       @endif
 
       @if (Auth::user()->role == 'admin')
