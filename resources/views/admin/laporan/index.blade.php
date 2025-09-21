@@ -72,6 +72,17 @@
           </div>
           <div class="d-flex align-items-center">
             <button class="btn btn-primary mr-2" type="submit">Terapkan</button>
+            <a
+              href="{{ route('admin.reports.pdf', array_filter([
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'dokter_id' => $dokterId,
+                'jadwal_id' => $jadwalId,
+              ])) }}"
+              class="btn btn-outline-secondary mr-2"
+            >
+              Unduh PDF
+            </a>
             @if ($dokterId || $jadwalId)
               <a href="{{ url('admin/laporan') }}" class="btn btn-link text-muted">Reset</a>
             @endif

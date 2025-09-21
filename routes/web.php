@@ -121,6 +121,9 @@ Route::post('payments/{antrian}', [PaymentsController::class, 'store'])
 Route::get('admin/laporan', [ReportController::class, 'index'])
     ->name('admin.reports.index')
     ->middleware('checkRole:admin');
+    Route::get('admin/laporan/pdf', [ReportController::class, 'downloadPdf'])
+    ->name('admin.reports.pdf')
+    ->middleware('checkRole:admin');
 
 Route::get('profile', [ProfileController::class, 'edit'])
     ->name('profile.edit')

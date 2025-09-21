@@ -5,16 +5,40 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Antrian;
 use App\Models\Dokter;
-use App\Models\Layanan;
 use App\Models\Jadwal;
+use App\Models\Layanan;
 use App\Models\Payment;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
+     {
+        $data = $this->buildReportData($request);
+
+        return view('admin.laporan.index', $data);
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $data = $this->buildReportData($request);
+        $data['generatedAt'] = Carbon::now();
+
+        $pdf = Pdf::loadView('admin.laporan.pdf', $data)
+            ->setPaper('A4', 'portrait');
+
+        $fileName = sprintf(
+            'laporan-operasional_%s-sd-%s.pdf',
+            Carbon::parse($data['startDate'])->format('Ymd'),
+            Carbon::parse($data['endDate'])->format('Ymd')
+        );
+
+        return $pdf->download($fileName);
+    }
+    protected function buildReportData(Request $request): array
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
@@ -90,7 +114,7 @@ class ReportController extends Controller
             $query->whereBetween('tanggal', [$startDate, $endDate]);
         })->where('payment_status', 'paid')->sum('amount');
 
-        return view('admin.laporan.index', [
+        return  [
             'startDate' => $startDate,
             'endDate' => $endDate,
             'totalQueue' => $totalQueue,
@@ -109,6 +133,7 @@ class ReportController extends Controller
             'selectedJadwal' => $selectedJadwal,
             'dokterId' => $dokterId,
             'jadwalId' => $jadwalId,
-        ]);
+       'clinicName' => config('app.name', 'Klinik'),
+        ];
     }
 }
