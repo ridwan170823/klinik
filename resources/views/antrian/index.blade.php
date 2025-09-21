@@ -6,7 +6,8 @@
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
       <i class="fa fa-bars"></i>
     </button>
-    <ul class="navbar-nav ml-auto">
+   <ul class="navbar-nav ml-auto align-items-center">
+      @include('layouts.partials.notification-dropdown')
       <div class="topbar-divider d-none d-sm-block"></div>
       <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -33,7 +34,7 @@
           @csrf
           <div class="form-row">
             
-            <div class="col">
+            <div class="col-12 col-xl-3 mb-2 mb-xl-0">
               <select class="form-control" name="layanan_id" id="layananSelect" required>
                 <option value="" disabled selected>Pilih Layanan</option>
                 @foreach ($layanans as $layanan)
@@ -41,17 +42,17 @@
                 @endforeach
               </select>
             </div>
-            <div class="col">
+            <div class="col-12 col-xl-3 mb-2 mb-xl-0">
               <select class="form-control" name="dokter_id" id="dokterSelect" required disabled>
                 <option value="" disabled selected>Pilih Dokter</option>
               </select>
             </div>
-            <div class="col">
+            <div class="col-12 col-xl-2 mb-2 mb-xl-0">
               <select class="form-control" name="jadwal_id" id="jadwalSelect" required disabled>
                 <option value="" disabled selected>Pilih Jadwal</option>
               </select>
             </div>
-            <div class="col">
+            <div class="col-12 col-xl-2 mb-2 mb-xl-0">
               <input type="date" class="form-control" name="tanggal" id="tanggalInput" required
                      min="{{ now()->toDateString() }}"
                      max="{{ now()->addDays(config('antrian.max_days_ahead'))->toDateString() }}"
@@ -60,29 +61,34 @@
               <div class="text-danger">{{ $message }}</div>
               @enderror
             </div>
-            <div class="col">
-              <button type="submit" class="btn btn-primary font-weight-bold">Ambil Antrian</button>
+            <div class="col-12 col-xl-2">
+              <button type="submit" class="btn btn-primary font-weight-bold btn-block">Ambil Antrian</button>
             </div>
           </div>
         </form>
       </div>
       @endif
       <div class="card-body">
-        <form method="GET" action="{{ route('antrian.index') }}" class="form-inline mb-3">
-          <select name="hari" class="form-control mr-2">
-            <option value="">Semua Hari</option>
-            @foreach ($haris as $hari)
-            <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>{{ $hari }}</option>
-            @endforeach
-          </select>
-          <select name="dokter_id" class="form-control mr-2">
-            <option value="">Semua Dokter</option>
-            @foreach ($dokters as $dokter)
-            <option value="{{ $dokter->id }}" {{ $selectedDokter == $dokter->id ? 'selected' : '' }}>{{ $dokter->nama }}</option>
-            @endforeach
-          </select>
-          <button type="submit" class="btn btn-primary">Filter</button>
-        </form>
+       <form method="GET" action="{{ route('antrian.index') }}" class="form-row align-items-center mb-3">
+          <div class="col-12 col-md-4 mb-2 mb-md-0">
+            <select name="hari" class="form-control w-100">
+              <option value="">Semua Hari</option>
+              @foreach ($haris as $hari)
+              <option value="{{ $hari }}" {{ $selectedHari == $hari ? 'selected' : '' }}>{{ $hari }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="col-12 col-md-4 mb-2 mb-md-0">
+            <select name="dokter_id" class="form-control w-100">
+              <option value="">Semua Dokter</option>
+              @foreach ($dokters as $dokter)
+              <option value="{{ $dokter->id }}" {{ $selectedDokter == $dokter->id ? 'selected' : '' }}>{{ $dokter->nama }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="col-12 col-md-4">
+            <button type="submit" class="btn btn-primary btn-block">Filter</button>
+          </div>
         <div class="table-responsive">
           <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>

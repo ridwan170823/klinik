@@ -10,7 +10,8 @@
         <i class="fa fa-bars"></i>
       </button>
     </form>
-    <ul class="navbar-nav ml-auto">
+     <ul class="navbar-nav ml-auto align-items-center">
+      @include('layouts.partials.notification-dropdown')
       <div class="topbar-divider d-none d-sm-block"></div>
       <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

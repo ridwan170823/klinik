@@ -114,42 +114,54 @@
       @endif
 
       @if (Auth::user()->role == 'admin')
-      <!-- Nav Item - Pages Collapse Menu -->
+      
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ route('antrian.index') }}" >
-         
-          <i class="fas fa-user-plus"></i></fas>
+        <a class="nav-link {{ request()->routeIs('antrian.index') ? 'active' : '' }}" href="{{ route('antrian.index') }}">
+          <i class="fas fa-user-plus"></i>
           <span>Daftar Antrian</span>
         </a>
-        <!-- Add this block -->
-        <a class="nav-link" href="{{ route('admin.antrian.history') }}">
-            <i class="fas fa-history"></i>
-            <span>Riwayat Antrian</span>
+        </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.antrian.history') ? 'active' : '' }}" href="{{ route('admin.antrian.history') }}">
+          <i class="fas fa-history"></i>
+          <span>Riwayat Antrian</span>
         </a>
-        <!-- end add -->
-        <!-- Manajemen Dokter -->
-        <a class="nav-link" href="{{ route('dokter.index') }}">
-            <i class="fas fa-user-md"></i>
-            <span>Manajemen Dokter</span>
+       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('dokter.index') ? 'active' : '' }}" href="{{ route('dokter.index') }}">
+          <i class="fas fa-user-md"></i>
+          <span>Manajemen Dokter</span>
         </a>
-         <a class="nav-link" href="{{ route('pasien.index') }}">
-            <i class="fas fa-user-md"></i>
-            <span>Data User</span>
+        </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('pasien.index') ? 'active' : '' }}" href="{{ route('pasien.index') }}">
+          <i class="fas fa-users"></i>
+          <span>Data User</span>
         </a>
 
-        <!-- Jadwal Dokter -->
-        <a class="nav-link" href="{{ route('jadwal.index') }}">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Jadwal Dokter</span>
+        </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('jadwal.index') ? 'active' : '' }}" href="{{ route('jadwal.index') }}">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Jadwal Dokter</span>
         </a>
-        <!-- Jadwal Dokter -->
-        <a class="nav-link" href="{{ route('layanan.index') }}">
-            <i class="fas fa-calendar-alt"></i>
-            <span>Manajemen Layanan</span>
+        </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('layanan.index') ? 'active' : '' }}" href="{{ route('layanan.index') }}">
+          <i class="fas fa-briefcase-medical"></i>
+          <span>Manajemen Layanan</span>
         </a>
-        <a class="nav-link" href="{{ route('dokter_layanan.index') }}">
-            <i class="fas fa-link"></i>
-            <span>Relasi Dokter-Layanan</span>
+       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('dokter_layanan.index') ? 'active' : '' }}" href="{{ route('dokter_layanan.index') }}">
+          <i class="fas fa-link"></i>
+          <span>Relasi Dokter-Layanan</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}" href="{{ route('admin.reports.index') }}">
+          <i class="fas fa-chart-pie"></i>
+          <span>Laporan</span>
         </a>
       </li>
       

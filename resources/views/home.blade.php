@@ -30,6 +30,7 @@
       </div>
     </div>
     <ul class="navbar-nav ml-auto align-items-center">
+       @include('layouts.partials.notification-dropdown')
       <li class="nav-item d-none d-lg-block mr-3 text-muted small">
         {{ $isDoctor ? 'Tetap produktif dan layani pasien terbaik hari ini ✨' : 'Tetap jaga kesehatan dan pantau kunjungan Anda di sini 🌿' }}
       </li>

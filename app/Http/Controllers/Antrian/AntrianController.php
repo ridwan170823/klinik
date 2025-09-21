@@ -6,16 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Antrian;
 use App\Models\Dokter;
 use App\Models\Layanan;
+use App\Models\User;
 use App\Models\Jadwal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\NomorAntrianAssigned;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AntrianScheduled;
 
 class AntrianController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Antrian::with(['user', 'dokter', 'jadwal']);
+       $query = Antrian::with(['user', 'dokter', 'jadwal', 'layanan']);
 
         
         $layanans = null;
@@ -102,6 +104,17 @@ class AntrianController extends Controller
             'nomor_antrian' => $nextNomorAntrian,
         ]);
             $jadwal->decrement('kapasitas');
+            $antrian->loadMissing(['user', 'dokter', 'jadwal', 'layanan']);
+
+        $patient = Auth::user();
+        if ($patient) {
+            $patient->notify(new AntrianScheduled($antrian));
+        }
+
+        $admins = User::where('role', 'admin')->get();
+        if ($admins->isNotEmpty()) {
+            Notification::send($admins, new AntrianScheduled($antrian, true));
+        }
 
         return redirect()->route('antrian.index');
     }
@@ -121,7 +134,15 @@ class AntrianController extends Controller
                 'status' => 'approved',
                 'nomor_antrian' => $last + 1,
             ]);
-            // $antrian->user->notify(new NomorAntrianAssigned($antrian));
+            $antrian->loadMissing(['user', 'dokter', 'jadwal', 'layanan']);
+            if ($antrian->user) {
+                $antrian->user->notify(new AntrianScheduled($antrian));
+            }
+
+            $admins = User::where('role', 'admin')->get();
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new AntrianScheduled($antrian, true));
+            }
         }
         return redirect()->route('antrian.index');
     }

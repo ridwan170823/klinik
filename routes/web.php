@@ -12,6 +12,8 @@ use App\Http\Controllers\DokterLayanan\DokterLayananController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PaymentsController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\ReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Layanan\Dokter;
 
@@ -111,6 +113,14 @@ Route::get('payments/{antrian}/create', [PaymentsController::class, 'create'])
 Route::post('payments/{antrian}', [PaymentsController::class, 'store'])
     ->name('payments.store')
    ->middleware('checkRole:pasien');
+
+   Route::post('notifications/read', [NotificationController::class, 'markAsRead'])
+    ->name('notifications.read')
+    ->middleware('auth');
+
+Route::get('admin/laporan', [ReportController::class, 'index'])
+    ->name('admin.reports.index')
+    ->middleware('checkRole:admin');
 
 Route::get('profile', [ProfileController::class, 'edit'])
     ->name('profile.edit')
