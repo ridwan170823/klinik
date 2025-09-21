@@ -72,7 +72,7 @@ class ReportController extends Controller
         $jadwals = Jadwal::query()
             ->when($dokterId, function ($query) use ($dokterId) {
                 $query->whereHas('dokters', function ($relation) use ($dokterId) {
-                    $relation->where('dokter_id', $dokterId);
+                    $relation->whereKey($dokterId);
                 });
             })
             ->orderBy('hari')
