@@ -32,12 +32,14 @@ class HomeController extends Controller
     $antrian = Antrian::count();
     $perjanjians = collect();
     $dokterSchedules = collect();
+    $jadwalCount = 0;
 
     if (Auth::user()?->role === 'dokter') {
       $perjanjians = Auth::user()
         ->perjanjians()
         ->latest('waktu_perjanjian')
         ->get();
+        $jadwalCount = $perjanjians->count();
     }
 
     if (Auth::user()?->role === 'pasien') {
@@ -96,6 +98,15 @@ class HomeController extends Controller
 
           return $dokter;
         });
+         $jadwalCount = $dokterSchedules->sum(function (Dokter $dokter) {
+        return $dokter->layananJadwals
+          ->filter(function ($jadwal) {
+            $layananId = optional($jadwal->pivot)->layanan_id;
+
+            return $jadwal->kapasitas > 0 && !empty($layananId);
+          })
+          ->count();
+      });
     }
     $data = [
       
@@ -103,6 +114,7 @@ class HomeController extends Controller
       'antrian' => $antrian,
       'perjanjians' => $perjanjians,
       'dokterSchedules' => $dokterSchedules,
+      'jadwalCount' => $jadwalCount,
     ];
     return view('home', $data);
   }

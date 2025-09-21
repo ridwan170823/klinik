@@ -8,7 +8,7 @@
     if (Auth::user()->role === 'dokter' && $perjanjianCount) {
         $queueCount = $perjanjianCount;
     }
-    $jadwalCount = isset($dokterSchedules) ? $dokterSchedules->count() : $perjanjianCount;
+    
 @endphp
 
 @section('content')
