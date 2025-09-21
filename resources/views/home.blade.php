@@ -196,7 +196,7 @@
                     @if ($dokterItem->biografi)
                     <p class="text-gray-600 mb-3">{{ \Illuminate\Support\Str::limit($dokterItem->biografi, 140) }}</p>
                     @endif
-                    @if ($dokterItem->jadwals->count())
+                     @if ($dokterItem->layananJadwals->count())
                     <div class="table-responsive">
                       <table class="table table-sm mb-0">
                         <thead class="thead-light">
@@ -220,9 +220,14 @@
                               @endif
                             </td>
                             <td class="text-right">
-                              @if ($jadwal->kapasitas > 0)
-                              <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari, 'layanan_id' => $jadwal->pivot->layanan_id]) }}"
+                             @php
+                                $layananId = optional($jadwal->pivot)->layanan_id;
+                              @endphp
+                              @if ($jadwal->kapasitas > 0 && $layananId)
+                              <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari, 'layanan_id' => $layananId]) }}"
                                 class="btn btn-sm btn-primary">Booking</a>
+                                @elseif ($jadwal->kapasitas > 0)
+                              <button class="btn btn-sm btn-secondary" disabled>Layanan belum tersedia</button>
                               @else
                               <button class="btn btn-sm btn-secondary" disabled>Tidak Tersedia</button>
                               @endif
