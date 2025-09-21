@@ -59,6 +59,12 @@ Route::prefix('dokter')->middleware('checkRole:dokter,admin')->group(function ()
 //     // Admin Pasien CRUD
 Route::resource('pasien', AdminPasienController::class)
     ->middleware('checkRole:admin');
+    Route::get('admin/laporan', [ReportController::class, 'index'])
+    ->name('admin.reports.index')
+    ->middleware('checkRole:admin');
+Route::get('admin/laporan/pdf', [ReportController::class, 'downloadPdf'])
+    ->name('admin.reports.pdf')
+    ->middleware('checkRole:admin');
 
 // Admin CRUD
 Route::resource('admin', AdminController::class)
@@ -118,12 +124,7 @@ Route::post('payments/{antrian}', [PaymentsController::class, 'store'])
     ->name('notifications.read')
     ->middleware('auth');
 
-Route::get('admin/laporan', [ReportController::class, 'index'])
-    ->name('admin.reports.index')
-    ->middleware('checkRole:admin');
-    Route::get('admin/laporan/pdf', [ReportController::class, 'downloadPdf'])
-    ->name('admin.reports.pdf')
-    ->middleware('checkRole:admin');
+
 
 Route::get('profile', [ProfileController::class, 'edit'])
     ->name('profile.edit')
