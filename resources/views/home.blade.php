@@ -208,7 +208,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                          @foreach ($dokterItem->jadwals as $jadwal)
+                          @foreach ($dokterItem->layananJadwals as $jadwal)
                           <tr class="{{ $jadwal->kapasitas <= 0 ? 'text-muted' : '' }}">
                             <td>{{ $jadwal->hari }}</td>
                             <td>{{ substr($jadwal->waktu_mulai, 0, 5) }} - {{ substr($jadwal->waktu_selesai, 0, 5) }}</td>
@@ -221,7 +221,7 @@
                             </td>
                             <td class="text-right">
                               @if ($jadwal->kapasitas > 0)
-                              <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari]) }}"
+                              <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari, 'layanan_id' => $jadwal->pivot->layanan_id]) }}"
                                 class="btn btn-sm btn-primary">Booking</a>
                               @else
                               <button class="btn btn-sm btn-secondary" disabled>Tidak Tersedia</button>

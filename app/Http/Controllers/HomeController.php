@@ -40,7 +40,7 @@ class HomeController extends Controller
     }
 
     if (Auth::user()?->role === 'pasien') {
-      $dokterSchedules = Dokter::with(['jadwals' => function ($query) {
+      $dokterSchedules = Dokter::with(['layananJadwals' => function ($query) {
         $query
           ->where('is_available', true)
           ->orderBy('hari')

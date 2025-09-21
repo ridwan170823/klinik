@@ -29,4 +29,10 @@ class Dokter extends Model
             ->withPivot('jadwal_id')
             ->withTimestamps();
     }
+    public function layananJadwals()
+    {
+        return $this->belongsToMany(Jadwal::class, 'dokter_layanan', 'dokter_id', 'jadwal_id')
+            ->withPivot('layanan_id')
+            ->withTimestamps();
+    }
 }
