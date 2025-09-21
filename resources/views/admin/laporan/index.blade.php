@@ -34,13 +34,72 @@
         <h1 class="h3 font-weight-bold text-gray-800">Laporan Operasional</h1>
         <p class="mb-0 text-gray-600">Ringkasan kinerja klinik berdasarkan rentang tanggal terpilih.</p>
       </div>
-      <form method="GET" class="form-inline mt-3 mt-md-0">
-        <label class="mr-2 text-muted small">Rentang tanggal</label>
-        <input type="date" name="start_date" value="{{ $startDate }}" class="form-control mr-2 mb-2 mb-md-0">
-        <span class="mx-2 d-none d-md-inline">s/d</span>
-        <input type="date" name="end_date" value="{{ $endDate }}" class="form-control mr-2 mb-2 mb-md-0">
-        <button class="btn btn-primary" type="submit">Terapkan</button>
+      <form method="GET" class="form-inline flex-column flex-md-row align-items-md-center mt-3 mt-md-0">
+        <div class="d-flex flex-column flex-md-row align-items-md-center w-100">
+          <div class="d-flex flex-column flex-md-row align-items-md-center mr-md-2 mb-2 mb-md-0">
+            <label class="mr-md-2 text-muted small mb-1 mb-md-0">Rentang tanggal</label>
+            <div class="d-flex align-items-center">
+              <input type="date" name="start_date" value="{{ $startDate }}" class="form-control mr-2 mb-2 mb-md-0">
+              <span class="mx-2 d-none d-md-inline">s/d</span>
+              <input type="date" name="end_date" value="{{ $endDate }}" class="form-control mr-2 mb-2 mb-md-0">
+            </div>
+          </div>
+          <div class="d-flex flex-column flex-md-row align-items-md-center mr-md-2 mb-2 mb-md-0">
+            <label for="dokter_id" class="mr-md-2 text-muted small mb-1 mb-md-0">Dokter</label>
+            <select name="dokter_id" id="dokter_id" class="form-control mr-md-2">
+              <option value="">Semua Dokter</option>
+              @foreach ($dokters as $dokter)
+                <option value="{{ $dokter->id }}" {{ (string) $dokterId === (string) $dokter->id ? 'selected' : '' }}>
+                  {{ $dokter->nama }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="d-flex flex-column flex-md-row align-items-md-center mr-md-2 mb-2 mb-md-0">
+            <label for="jadwal_id" class="mr-md-2 text-muted small mb-1 mb-md-0">Jadwal</label>
+            <select name="jadwal_id" id="jadwal_id" class="form-control mr-md-2">
+              <option value="">Semua Jadwal</option>
+              @foreach ($jadwals as $jadwal)
+                @php
+                  $mulai = \Carbon\Carbon::parse($jadwal->waktu_mulai)->format('H:i');
+                  $selesai = \Carbon\Carbon::parse($jadwal->waktu_selesai)->format('H:i');
+                @endphp
+                <option value="{{ $jadwal->id }}" {{ (string) $jadwalId === (string) $jadwal->id ? 'selected' : '' }}>
+                  {{ $jadwal->hari }} ({{ $mulai }} - {{ $selesai }})
+                </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="d-flex align-items-center">
+            <button class="btn btn-primary mr-2" type="submit">Terapkan</button>
+            @if ($dokterId || $jadwalId)
+              <a href="{{ url('admin/laporan') }}" class="btn btn-link text-muted">Reset</a>
+            @endif
+          </div>
+        </div>
       </form>
+      @php
+        $jadwalLabel = null;
+        if ($selectedJadwal) {
+            $jadwalLabel = sprintf(
+                '%s (%s - %s)',
+                $selectedJadwal->hari,
+                \Carbon\Carbon::parse($selectedJadwal->waktu_mulai)->format('H:i'),
+                \Carbon\Carbon::parse($selectedJadwal->waktu_selesai)->format('H:i')
+            );
+        }
+      @endphp
+      @if ($selectedDokter || $selectedJadwal)
+        <div class="mt-3">
+          <span class="text-muted small mr-2">Filter aktif:</span>
+          @if ($selectedDokter)
+            <span class="badge badge-info mr-2">Dokter: {{ $selectedDokter->nama }}</span>
+          @endif
+          @if ($selectedJadwal)
+            <span class="badge badge-info">Jadwal: {{ $jadwalLabel }}</span>
+          @endif
+        </div>
+      @endif
     </div>
 
     <div class="row">

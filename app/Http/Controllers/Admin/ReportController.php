@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Antrian;
 use App\Models\Dokter;
 use App\Models\Layanan;
+use App\Models\Jadwal;
 use App\Models\Payment;
 use App\Models\User;
 use Carbon\Carbon;
@@ -17,6 +18,8 @@ class ReportController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $dokterId = $request->input('dokter_id');
+        $jadwalId = $request->input('jadwal_id');
 
         if (! $startDate || ! $endDate) {
             $start = Carbon::now()->startOfMonth();
@@ -30,7 +33,13 @@ class ReportController extends Controller
         }
 
         $baseQuery = Antrian::with(['user', 'dokter', 'jadwal', 'layanan'])
-            ->whereBetween('tanggal', [$startDate, $endDate]);
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->when($dokterId, function ($query) use ($dokterId) {
+                $query->where('dokter_id', $dokterId);
+            })
+            ->when($jadwalId, function ($query) use ($jadwalId) {
+                $query->where('jadwal_id', $jadwalId);
+            });
 
         $totalQueue = (clone $baseQuery)->count();
         $approvedQueue = (clone $baseQuery)->where('status', 'approved')->count();
@@ -58,6 +67,24 @@ class ReportController extends Controller
         $totalPatients = User::where('role', 'pasien')->count();
         $totalDoctors = Dokter::count();
         $totalServices = Layanan::count();
+        $dokters = Dokter::orderBy('nama')->get();
+
+        $jadwals = Jadwal::query()
+            ->when($dokterId, function ($query) use ($dokterId) {
+                $query->whereHas('dokters', function ($relation) use ($dokterId) {
+                    $relation->where('dokter_id', $dokterId);
+                });
+            })
+            ->orderBy('hari')
+            ->orderBy('waktu_mulai')
+            ->get();
+
+        $selectedDokter = $dokters->firstWhere('id', (int) $dokterId);
+        $selectedJadwal = $jadwals->firstWhere('id', (int) $jadwalId);
+
+        if (! $selectedJadwal && $jadwalId) {
+            $selectedJadwal = Jadwal::find($jadwalId);
+        }
 
         $totalRevenue = Payment::whereHas('antrian', function ($query) use ($startDate, $endDate) {
             $query->whereBetween('tanggal', [$startDate, $endDate]);
@@ -76,6 +103,12 @@ class ReportController extends Controller
             'totalDoctors' => $totalDoctors,
             'totalServices' => $totalServices,
             'totalRevenue' => $totalRevenue,
+            'dokters' => $dokters,
+            'jadwals' => $jadwals,
+            'selectedDokter' => $selectedDokter,
+            'selectedJadwal' => $selectedJadwal,
+            'dokterId' => $dokterId,
+            'jadwalId' => $jadwalId,
         ]);
     }
 }
