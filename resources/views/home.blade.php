@@ -4,8 +4,11 @@
     use Carbon\Carbon;
     $today = Carbon::now()->locale('id')->translatedFormat('l, d F Y');
     $perjanjianCount = isset($perjanjians) ? $perjanjians->count() : 0;
+    $role = Auth::user()->role ?? null;
+    $isDoctor = $role === 'dokter';
+    $isPatient = $role === 'pasien';
     $queueCount = $antrian;
-    if (Auth::user()->role === 'dokter' && $perjanjianCount) {
+    if ($isDoctor && $perjanjianCount) {
         $queueCount = $perjanjianCount;
     }
     
@@ -28,7 +31,7 @@
     </div>
     <ul class="navbar-nav ml-auto align-items-center">
       <li class="nav-item d-none d-lg-block mr-3 text-muted small">
-        Tetap produktif dan layani pasien terbaik hari ini ✨
+        {{ $isDoctor ? 'Tetap produktif dan layani pasien terbaik hari ini ✨' : 'Tetap jaga kesehatan dan pantau kunjungan Anda di sini 🌿' }}
       </li>
       <li class="nav-item dropdown no-arrow">
          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown"
@@ -55,7 +58,7 @@
     <div class="content-header">
       <div>
         <h1 class="page-title">Selamat datang kembali, {{ Auth::user()->name }}! 👋</h1>
-        <p class="subtitle mb-0">Pantau performa klinik dan aktivitas terbaru Anda hari ini.</p>
+        <p class="subtitle mb-0">{{ $isDoctor ? 'Pantau performa klinik dan aktivitas terbaru Anda hari ini.' : 'Kelola reservasi dan jadwal kunjungan Anda dengan mudah.' }}</p>
       </div>
       <div class="date-badge">
         {{ ucfirst($today) }}
@@ -89,49 +92,53 @@
       </div>
     </div>
     <!-- Content Row -->
-    <div class="row">
-      <div class="col-xl-12 col-lg-12">
-        <div class="card shadow-sm mb-4">
-          <div class="card-header d-flex align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Perjanjian dengan Pasien</h6>
-            <span class="badge badge-info">Update realtime</span>
-          </div>
-          <div class="card-body">
-           @if (Auth::user()->role == 'dokter' && $perjanjianCount)
-              <div class="table-responsive">
-                <table class="table" id="dataTable" width="100%" cellspacing="0">
-                  <thead>
-                    <tr>
-                      <th>Nama Pasien</th>
-                      <th>Nama Dokter</th>
-                      <th>Spesialisasi Dokter</th>
-                      <th>Waktu Perjanjian</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @foreach ($perjanjians as $perjanjian)
-                    <tr>
-                      <td>{{ $perjanjian->nama_pasien }}</td>
-                      <td>{{ $perjanjian->nama_dokter }}</td>
-                      <td>{{ $perjanjian->spesialiasi_dokter }}</td>
-                      <td>{{ $perjanjian->waktu_perjanjian }}</td>
-                    </tr>
-                    @endforeach
-                  </tbody>
-                </table>
-              </div>
-            @else
-              <div class="text-center py-5 text-muted">
-                <i class="fas fa-calendar-alt fa-3x mb-3"></i>
-                <p class="mb-1 font-weight-semibold">Belum ada perjanjian aktif.</p>
-                <p class="mb-0">Semua jadwal akan tampil otomatis ketika pasien melakukan reservasi.</p>
-              </div>
-            @endif
+   @if ($isDoctor)
+      <div class="row">
+        <div class="col-xl-12 col-lg-12">
+          <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">Perjanjian dengan Pasien</h6>
+              <span class="badge badge-info">Update realtime</span>
+            </div>
+            <div class="card-body">
+              @if ($perjanjianCount)
+                <div class="table-responsive">
+                  <table class="table" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                      <tr>
+                        <th>Nama Pasien</th>
+                        <th>Nama Dokter</th>
+                        <th>Spesialisasi Dokter</th>
+                        <th>Waktu Perjanjian</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach ($perjanjians as $perjanjian)
+                        <tr>
+                          <td>{{ $perjanjian->nama_pasien }}</td>
+                          <td>{{ $perjanjian->nama_dokter }}</td>
+                          <td>{{ $perjanjian->spesialiasi_dokter }}</td>
+                          <td>{{ $perjanjian->waktu_perjanjian }}</td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+              @else
+                <div class="text-center py-5 text-muted">
+                  <i class="fas fa-calendar-alt fa-3x mb-3"></i>
+                  <p class="mb-1 font-weight-semibold">Belum ada perjanjian aktif.</p>
+                  <p class="mb-0">Semua jadwal akan tampil otomatis ketika pasien melakukan reservasi.</p>
+                </div>
+              @endif
+            </div>
           </div>
         </div>
       </div>
-  @if (Auth::user()->role == 'pasien')
-    <div class="row">
+ @endif
+
+    @if ($isPatient)
+      <div class="row">
       <div class="col-xl-12 col-lg-12">
         <div class="card shadow-sm mb-4">
           <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between">
