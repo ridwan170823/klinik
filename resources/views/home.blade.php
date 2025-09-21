@@ -175,75 +175,82 @@
           </div>
           <div class="card-body">
             @forelse ($dokterSchedules as $dokterItem)
-            @php
-              $dokterImage = $dokterItem->image
-                ? asset('storage/' . $dokterItem->image)
-                : asset('img/undraw_profile.svg');
-            @endphp
-            <div class="card border-left-primary shadow-sm mb-4">
-              <div class="card-body">
-                <div class="d-flex flex-column flex-md-row">
-                  <div class="flex-shrink-0 text-center text-md-left">
-                    <img src="{{ $dokterImage }}" alt="Foto {{ $dokterItem->nama }}"
-                      class="rounded mb-3 mb-md-0"
-                      style="width: 110px; height: 110px; object-fit: cover;">
-                  </div>
-                  <div class="ml-md-4 flex-grow-1">
-                    <div class="d-flex flex-column flex-md-row align-items-md-center mb-2">
-                      <h5 class="font-weight-bold text-primary mb-1 mb-md-0 mr-md-3">{{ $dokterItem->nama }}</h5>
-                      <span class="badge badge-info">{{ $dokterItem->spesialis }}</span>
+             @php
+                $dokterImage = $dokterItem->image
+                  ? asset('storage/' . $dokterItem->image)
+                  : asset('img/undraw_profile.svg');
+              @endphp
+              <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                  <div class="row align-items-start">
+                    <div class="col-md-3 text-center text-md-left mb-3 mb-md-0">
+                      <img src="{{ $dokterImage }}" alt="Foto {{ $dokterItem->nama }}"
+                        class="rounded shadow-sm"
+                        style="width: 120px; height: 120px; object-fit: cover;">
                     </div>
-                    @if ($dokterItem->biografi)
-                    <p class="text-gray-600 mb-3">{{ \Illuminate\Support\Str::limit($dokterItem->biografi, 140) }}</p>
-                    @endif
-                     @if ($dokterItem->layananJadwals->count())
-                    <div class="table-responsive">
-                      <table class="table table-sm mb-0">
-                        <thead class="thead-light">
-                          <tr>
-                            <th>Hari</th>
-                            <th>Waktu</th>
-                            <th class="text-center">Sisa Kapasitas</th>
-                            <th class="text-right">Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          @foreach ($dokterItem->layananJadwals as $jadwal)
-                          <tr class="{{ $jadwal->kapasitas <= 0 ? 'text-muted' : '' }}">
-                            <td>{{ $jadwal->hari }}</td>
-                            <td>{{ substr($jadwal->waktu_mulai, 0, 5) }} - {{ substr($jadwal->waktu_selesai, 0, 5) }}</td>
-                            <td class="text-center">
-                              @if ($jadwal->kapasitas > 0)
-                              <span class="badge badge-success">{{ $jadwal->kapasitas }} slot</span>
-                              @else
-                              <span class="badge badge-secondary">Penuh</span>
-                              @endif
-                            </td>
-                            <td class="text-right">
-                             @php
-                                $layananId = optional($jadwal->pivot)->layanan_id;
-                              @endphp
-                              @if ($jadwal->kapasitas > 0 && $layananId)
-                              <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari, 'layanan_id' => $layananId]) }}"
-                                class="btn btn-sm btn-primary">Booking</a>
-                                @elseif ($jadwal->kapasitas > 0)
-                              <button class="btn btn-sm btn-secondary" disabled>Layanan belum tersedia</button>
-                              @else
-                              <button class="btn btn-sm btn-secondary" disabled>Tidak Tersedia</button>
-                              @endif
-                            </td>
-                          </tr>
-                          @endforeach
-                        </tbody>
-                      </table>
+                   <div class="col-md-9">
+                      <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between mb-3">
+                        <div>
+                          <h5 class="font-weight-bold text-primary mb-1">{{ $dokterItem->nama }}</h5>
+                          <span class="badge badge-pill badge-info text-uppercase">{{ $dokterItem->spesialis }}</span>
+                        </div>
+                        <div class="text-muted small mt-2 mt-lg-0">
+                          Terakhir diperbarui {{ optional($dokterItem->updated_at)->diffForHumans() ?? 'belum tersedia' }}
+                        </div>
+                      </div>
+                      @if ($dokterItem->biografi)
+                        <p class="text-gray-600 mb-4">{{ \Illuminate\Support\Str::limit($dokterItem->biografi, 160) }}</p>
+                      @endif
+                      @if ($dokterItem->layananJadwals->count())
+                        <div class="table-responsive">
+                          <table class="table table-sm table-hover table-borderless mb-0 align-middle">
+                            <thead class="bg-light text-muted">
+                              <tr>
+                                <th class="border-0">Hari</th>
+                                <th class="border-0">Waktu</th>
+                                <th class="border-0 text-center">Sisa Kapasitas</th>
+                                <th class="border-0 text-right">Aksi</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @foreach ($dokterItem->layananJadwals as $jadwal)
+                                @php
+                                  $layananId = optional($jadwal->pivot)->layanan_id;
+                                  $isAvailable = $jadwal->kapasitas > 0 && $layananId;
+                                @endphp
+                                <tr class="{{ $jadwal->kapasitas <= 0 ? 'text-muted bg-light' : '' }}">
+                                  <td class="font-weight-bold">{{ $jadwal->hari }}</td>
+                                  <td>{{ substr($jadwal->waktu_mulai, 0, 5) }} - {{ substr($jadwal->waktu_selesai, 0, 5) }}</td>
+                                  <td class="text-center">
+                                    @if ($jadwal->kapasitas > 0)
+                                      <span class="badge badge-success badge-pill">{{ $jadwal->kapasitas }} slot</span>
+                                    @else
+                                      <span class="badge badge-secondary badge-pill">Penuh</span>
+                                    @endif
+                                  </td>
+                                  <td class="text-right">
+                                    @if ($isAvailable)
+                                      <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari, 'layanan_id' => $layananId]) }}"
+                                        class="btn btn-sm btn-primary">Booking</a>
+                                    @elseif ($jadwal->kapasitas > 0)
+                                      <span class="badge badge-warning px-3 py-2">Layanan belum tersedia</span>
+                                    @else
+                                      <span class="badge badge-light px-3 py-2">Tidak tersedia</span>
+                                    @endif
+                                  </td>
+                                </tr>
+                              @endforeach
+                            </tbody>
+                          </table>
+                        </div>
+                      @else
+                        <p class="mb-0 text-gray-500">Belum ada jadwal tersedia untuk dokter ini.</p>
+                      @endif
                     </div>
-                    @else
-                    <p class="mb-0 text-gray-500">Belum ada jadwal tersedia untuk dokter ini.</p>
-                    @endif
+                    
                   </div>
                 </div>
               </div>
-            </div>
             @empty
             <p class="mb-0 text-gray-500">Belum ada dokter yang tersedia saat ini.</p>
             @endforelse
