@@ -113,7 +113,7 @@
           <div class="card-body">
             @forelse ($services as $service)
               <div class="d-flex justify-content-between align-items-center py-2 border-bottom small">
-                <span>{{ $service->layanan->nama ?? 'Layanan tidak diketahui' }}</span>
+                <span>{{ optional($service->layanan)->nama ?? 'Layanan tidak diketahui' }}</span>
                 <span class="badge badge-primary">{{ $service->total }}</span>
               </div>
             @empty

@@ -37,6 +37,7 @@ class ReportController extends Controller
         $pendingQueue = (clone $baseQuery)->where('status', 'pending')->count();
 
         $services = (clone $baseQuery)
+            ->whereNotNull('layanan_id')
             ->selectRaw('layanan_id, COUNT(*) as total')
             ->groupBy('layanan_id')
             ->with('layanan')
