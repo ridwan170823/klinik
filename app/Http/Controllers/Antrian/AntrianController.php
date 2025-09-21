@@ -108,12 +108,20 @@ class AntrianController extends Controller
 
         $patient = Auth::user();
         if ($patient) {
-            $patient->notify(new AntrianScheduled($antrian));
+           try {
+                $patient->notify(new AntrianScheduled($antrian));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         $admins = User::where('role', 'admin')->get();
         if ($admins->isNotEmpty()) {
-            Notification::send($admins, new AntrianScheduled($antrian, true));
+           try {
+                Notification::send($admins, new AntrianScheduled($antrian, true));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         return redirect()->route('antrian.index');
@@ -136,12 +144,21 @@ class AntrianController extends Controller
             ]);
             $antrian->loadMissing(['user', 'dokter', 'jadwal', 'layanan']);
             if ($antrian->user) {
-                $antrian->user->notify(new AntrianScheduled($antrian));
+                 try {
+                    $antrian->user->notify(new AntrianScheduled($antrian));
+                } catch (\Throwable $e) {
+                    report($e);
+                }
             }
+            
 
             $admins = User::where('role', 'admin')->get();
             if ($admins->isNotEmpty()) {
-                Notification::send($admins, new AntrianScheduled($antrian, true));
+                try {
+                    Notification::send($admins, new AntrianScheduled($antrian, true));
+                } catch (\Throwable $e) {
+                    report($e);
+                }
             }
         }
         return redirect()->route('antrian.index');

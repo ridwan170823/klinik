@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -25,35 +24,16 @@ return new class extends Migration
             });
         }
 
-        if ($statusColumnExists) {
-                $connection = Schema::getConnection();
+       
+        if (Schema::hasColumn('antrians', 'status')) {
+            $afterColumn = 'status';
+        } elseif (Schema::hasColumn('antrians', 'tanggal')) {
+            $afterColumn = 'tanggal';
+        } elseif (Schema::hasColumn('antrians', 'jadwal_id')) {
+            $afterColumn = 'jadwal_id';
+        }
 
-                if ($connection->getDriverName() === 'mysql') {
-                    $statusColumnDefinition = DB::table('information_schema.columns')
-                        ->select('data_type')
-                        ->where('table_schema', $connection->getDatabaseName())
-                        ->where('table_name', $connection->getTablePrefix() . 'antrians')
-                        ->where('column_name', 'status')
-                        ->first();
-
-                    $statusColumnIsEnum = $statusColumnDefinition !== null
-                        && isset($statusColumnDefinition->data_type)
-                        && strtolower($statusColumnDefinition->data_type) === 'enum';
-                }
-            }
-
-            if ($statusColumnExists && ! $statusColumnIsEnum) {
-            $afterColumn = null;
-            $statusColumnExists = Schema::hasColumn('antrians', 'status');
-            $statusColumnIsEnum = false;
-
-            if (Schema::hasColumn('antrians', 'status')) {
-                $afterColumn = 'status';
-            } elseif (Schema::hasColumn('antrians', 'tanggal')) {
-                $afterColumn = 'tanggal';
-            } elseif (Schema::hasColumn('antrians', 'jadwal_id')) {
-                $afterColumn = 'jadwal_id';
-            }
+        if (! Schema::hasColumn('antrians', 'nomor')) {
 
             Schema::table('antrians', function (Blueprint $table) use ($afterColumn) {
                 $column = $table->unsignedInteger('nomor')->nullable();
