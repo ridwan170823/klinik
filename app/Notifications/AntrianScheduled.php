@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Antrian;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Carbon\Carbon;
 
@@ -22,7 +23,43 @@ class AntrianScheduled extends Notification
 
     public function via($notifiable): array
     {
-        return ['database'];
+         $channels = ['database'];
+
+        if (! $this->forAdmin && ! empty($notifiable->email)) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
+    }
+
+    public function toMail($notifiable): MailMessage
+    {
+        $tanggal = $this->antrian->tanggal
+            ? Carbon::parse($this->antrian->tanggal)
+                ->locale(app()->getLocale())
+                ->translatedFormat('l, d F Y')
+            : null;
+        $waktuMulai = $this->antrian->jadwal->waktu_mulai ?? null;
+        $waktuSelesai = $this->antrian->jadwal->waktu_selesai ?? null;
+        $namaDokter = $this->antrian->dokter->nama ?? '-';
+        $namaLayanan = $this->antrian->layanan->nama ?? '-';
+
+        $waktuText = trim(implode(' - ', array_filter([$waktuMulai, $waktuSelesai])));
+        $jadwalText = $tanggal
+            ? trim($tanggal.' '.($waktuText ?: ''))
+            : 'tanggal belum ditentukan';
+
+        return (new MailMessage)
+            ->from(config('mail.from.address'), config('mail.from.name'))
+            ->subject('Jadwal Antrian Dikonfirmasi')
+            ->greeting('Halo ' . ($notifiable->name ?? 'Pasien') . '!')
+            ->line('Permintaan antrian kamu sudah disetujui.')
+            ->line('Layanan: ' . $namaLayanan)
+            ->line('Dokter: ' . $namaDokter)
+            ->line('Jadwal: ' . $jadwalText)
+            ->line('Nomor antrian: ' . ($this->antrian->nomor_antrian ?? '-'))
+            ->action('Lihat Detail Antrian', route('antrian.index'))
+            ->line('Terima kasih telah mempercayakan layanan kami.');
     }
 
     public function toArray($notifiable): array
