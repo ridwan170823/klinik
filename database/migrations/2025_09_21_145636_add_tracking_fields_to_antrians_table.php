@@ -9,21 +9,40 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+ public function up(): void
     {
-        Schema::table('antrians', function (Blueprint $table) {
-           if (! Schema::hasColumn('antrians', 'tanggal')) {
+       
+        if (! Schema::hasColumn('antrians', 'tanggal')) {
+            Schema::table('antrians', function (Blueprint $table) {
                 $table->date('tanggal')->nullable()->after('jadwal_id')->index();
-            }
+            });
+        }
 
-            if (! Schema::hasColumn('antrians', 'status')) {
+        if (! Schema::hasColumn('antrians', 'status')) {
+            Schema::table('antrians', function (Blueprint $table) {
                 $table->string('status')->default('pending')->after('tanggal')->index();
+            });
+        }
+
+        if (! Schema::hasColumn('antrians', 'nomor')) {
+            $afterColumn = null;
+
+            if (Schema::hasColumn('antrians', 'status')) {
+                $afterColumn = 'status';
+            } elseif (Schema::hasColumn('antrians', 'tanggal')) {
+                $afterColumn = 'tanggal';
+            } elseif (Schema::hasColumn('antrians', 'jadwal_id')) {
+                $afterColumn = 'jadwal_id';
             }
 
-            if (! Schema::hasColumn('antrians', 'nomor')) {
-                $table->unsignedInteger('nomor')->nullable()->after('status');
-            }
-        });
+            Schema::table('antrians', function (Blueprint $table) use ($afterColumn) {
+                $column = $table->unsignedInteger('nomor')->nullable();
+
+                if ($afterColumn !== null) {
+                    $column->after($afterColumn);
+                }
+            });
+        }
     }
 
     /**
@@ -31,21 +50,17 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (Schema::hasColumn('antrians', 'tanggal')) {
-            Schema::table('antrians', function (Blueprint $table) {
-                $table->dropColumn('tanggal');
-            });
+       $columnsToDrop = [];
+
+        foreach (['nomor', 'status', 'tanggal'] as $column) {
+            if (Schema::hasColumn('antrians', $column)) {
+                $columnsToDrop[] = $column;
+            }
         }
 
-        if (Schema::hasColumn('antrians', 'status')) {
-            Schema::table('antrians', function (Blueprint $table) {
-                $table->dropColumn('status');
-            });
-        }
-
-        if (Schema::hasColumn('antrians', 'nomor')) {
-            Schema::table('antrians', function (Blueprint $table) {
-                $table->dropColumn('nomor');
+        if ($columnsToDrop !== []) {
+            Schema::table('antrians', function (Blueprint $table) use ($columnsToDrop) {
+                $table->dropColumn($columnsToDrop);
             });
         }
     }
