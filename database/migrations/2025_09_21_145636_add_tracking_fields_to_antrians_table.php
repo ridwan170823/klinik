@@ -12,9 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('antrians', function (Blueprint $table) {
-            $table->date('tanggal')->nullable()->after('jadwal_id')->index();
-            $table->string('status')->default('pending')->after('tanggal')->index();
-            $table->unsignedInteger('nomor')->nullable()->after('status');
+           if (! Schema::hasColumn('antrians', 'tanggal')) {
+                $table->date('tanggal')->nullable()->after('jadwal_id')->index();
+            }
+
+            if (! Schema::hasColumn('antrians', 'status')) {
+                $table->string('status')->default('pending')->after('tanggal')->index();
+            }
+
+            if (! Schema::hasColumn('antrians', 'nomor')) {
+                $table->unsignedInteger('nomor')->nullable()->after('status');
+            }
         });
     }
 
@@ -23,8 +31,22 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('antrians', function (Blueprint $table) {
-            $table->dropColumn(['tanggal', 'status', 'nomor']);
-        });
+        if (Schema::hasColumn('antrians', 'tanggal')) {
+            Schema::table('antrians', function (Blueprint $table) {
+                $table->dropColumn('tanggal');
+            });
+        }
+
+        if (Schema::hasColumn('antrians', 'status')) {
+            Schema::table('antrians', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
+
+        if (Schema::hasColumn('antrians', 'nomor')) {
+            Schema::table('antrians', function (Blueprint $table) {
+                $table->dropColumn('nomor');
+            });
+        }
     }
 };
