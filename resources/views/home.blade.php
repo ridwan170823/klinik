@@ -1,28 +1,44 @@
 @extends('layouts.main')
 
+@php
+    use Carbon\Carbon;
+    $today = Carbon::now()->locale('id')->translatedFormat('l, d F Y');
+    $perjanjianCount = isset($perjanjians) ? $perjanjians->count() : 0;
+    $queueCount = $antrian;
+    if (Auth::user()->role === 'dokter' && $perjanjianCount) {
+        $queueCount = $perjanjianCount;
+    }
+    $jadwalCount = isset($dokterSchedules) ? $dokterSchedules->count() : $perjanjianCount;
+@endphp
+
 @section('content')
 <!-- Main Content -->
 <div id="content">
   <!-- Topbar -->
-  <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+  <nav class="navbar navbar-expand topbar modern-topbar shadow-sm">
+    <button id="sidebarToggleTop" class="btn btn-link rounded-circle mr-3 d-lg-none">
       <i class="fa fa-bars"></i>
     </button>
-    <!-- Topbar Navbar -->
-    <ul class="navbar-nav ml-auto">
-      <div class="topbar-divider d-none d-sm-block"></div>
-      <!-- Nav Item - User Information -->
+    <div class="d-flex align-items-center">
+      <div class="d-none d-md-block mr-3 text-muted small">Akun aktif</div>
+      <div>
+        <h6 class="mb-0 font-weight-bold">{{ Auth::user()->name }}</h6>
+        <span class="text-muted small">{{ ucfirst(Auth::user()->role) }}</span>
+      </div>
+    </div>
+    <ul class="navbar-nav ml-auto align-items-center">
+      <li class="nav-item d-none d-lg-block mr-3 text-muted small">
+        Tetap produktif dan layani pasien terbaik hari ini ✨
+      </li>
       <li class="nav-item dropdown no-arrow">
-        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
-          <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->name }}</span>
-          <img class="img-profile rounded-circle" src="{{ asset('img/undraw_profile.svg') }}">
+          <img class="img-profile rounded-circle mr-2" src="{{ asset('img/undraw_profile.svg') }}" alt="Avatar">
+          <span class="font-weight-semibold">{{ Auth::user()->name }}</span>
         </a>
         <!-- Dropdown - User Information -->
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                   document.getElementById('logout-form').submit();">
+          <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             {{ __('Logout') }}
           </a>
 
@@ -36,142 +52,94 @@
   <!-- End of Topbar -->
   <!-- Begin Page Content -->
   <div class="container-fluid">
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-      <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-        Selamat Datang, {{ Auth::user()->name }}!
-      </h1>
-      {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
+    <div class="content-header">
+      <div>
+        <h1 class="page-title">Selamat datang kembali, {{ Auth::user()->name }}! 👋</h1>
+        <p class="subtitle mb-0">Pantau performa klinik dan aktivitas terbaru Anda hari ini.</p>
+      </div>
+      <div class="date-badge">
+        {{ ucfirst($today) }}
+      </div>
     </div>
-    <!-- Content Row -->
-    <div class="row">
-      <!-- Earnings (Monthly) Card Example -->
+       <div class="row stats-grid">
       <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                  Jumlah Dokter</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $dokter }}</div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-              </div>
-            </div>
-          </div>
+        <div class="stats-card">
+          <span class="label">Jumlah Dokter</span>
+          <div class="value">{{ $dokter }}</div>
+          <p class="mb-0 small">Tim medis aktif yang siap memberikan perawatan terbaik.</p>
+          <i class="fas fa-user-md"></i>
         </div>
       </div>
-      <!-- Earnings (Monthly) Card Example -->
       <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                  Jumlah Antrian
-                </div>
-                @if (Auth::user()->role == 'dokter' && $perjanjians->count())
-                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ $perjanjians->count() }}
-                </div>
-                @elseif (Auth::user()->role == 'admin')
-                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ $antrian }}
-                </div>
-                @else
-                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                  {{ $antrian }}
-                </div>
-                @endif
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Earnings (Monthly) Card Example
-      <div class="col-xl-4 col-md-6 mb-4">
-        <div class="card border-left-info shadow h-100 py-2">
-          <div class="card-body">
-            <div class="row no-gutters align-items-center">
-              <div class="col mr-2">
-                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Jenis Obat
-                </div>
-                <div class="row no-gutters align-items-center">
-                  <div class="col-auto">
-                   
-                  </div>
-                  <div class="col">
 
-                  </div>
-                </div>
-              </div>
-              <div class="col-auto">
-                <i class="fas fa-2x fa-prescription-bottle-alt"></i>
-              </div>
-            </div>
-          </div>
+        <div class="stats-card secondary">
+          <span class="label">Antrian Aktif</span>
+          <div class="value">{{ $queueCount }}</div>
+          <p class="mb-0 small">Jumlah layanan yang akan ditangani pada jadwal hari ini.</p>
+          <i class="fas fa-calendar-check"></i>
         </div>
       </div>
-    </div> -->
-    <!-- Content Row -->
-    <div class="row">
-      <!-- Area Chart -->
-      <div class="col-xl-12 col-lg-12">
-        <div class="card shadow mb-4">
-          @if (Auth::user()->role == 'dokter' && $perjanjians->count())
-          <!-- Card Header - Dropdown -->
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Perjanjian dengan pasien</h6>
-          </div>
-          <!-- Card Body -->
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                <thead>
-                  <tr>
-                    <th>Nama Pasien</th>
-                    <th>Nama Dokter</th>
-                    <th>Spesialisasi Dokter</th>
-                    <th>Waktu Perjanjian</th>
-                  </tr>
-                </thead>
-                <tfoot>
-                  <tr>
-                    <th>Nama Pasien</th>
-                    <th>Nama Dokter</th>
-                    <th>Spesialisasi Dokter</th>
-                    <th>Waktu Perjanjian</th>
-                  </tr>
-                </tfoot>
-                <tbody>
-                  @foreach ($perjanjians as $perjanjian)
-                  <tr>
-                    <td>{{ $perjanjian->nama_pasien }}</td>
-                    <td>{{ $perjanjian->nama_dokter }}</td>
-                    <td>{{ $perjanjian->spesialiasi_dokter }}</td>
-                    <td>{{ $perjanjian->waktu_perjanjian }}</td>
-                  </tr>
-                  @endforeach
-                </tbody>
-              </table>
-            </div>
-          </div>
-          @endif
+      <div class="col-xl-4 col-md-12 mb-4">
+        <div class="stats-card neutral">
+          <span class="label">Jadwal Terjadwal</span>
+          <div class="value">{{ $jadwalCount }}</div>
+          <p class="mb-0 small">Pertemuan dan jadwal praktik yang telah dikonfirmasi.</p>
+          <i class="fas fa-clock"></i>
         </div>
       </div>
     </div>
-  </div>
+    <!-- Content Row -->
+    <div class="row">
+      <div class="col-xl-12 col-lg-12">
+        <div class="card shadow-sm mb-4">
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Perjanjian dengan Pasien</h6>
+            <span class="badge badge-info">Update realtime</span>
+          </div>
+          <div class="card-body">
+           @if (Auth::user()->role == 'dokter' && $perjanjianCount)
+              <div class="table-responsive">
+                <table class="table" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Nama Pasien</th>
+                      <th>Nama Dokter</th>
+                      <th>Spesialisasi Dokter</th>
+                      <th>Waktu Perjanjian</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($perjanjians as $perjanjian)
+                    <tr>
+                      <td>{{ $perjanjian->nama_pasien }}</td>
+                      <td>{{ $perjanjian->nama_dokter }}</td>
+                      <td>{{ $perjanjian->spesialiasi_dokter }}</td>
+                      <td>{{ $perjanjian->waktu_perjanjian }}</td>
+                    </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            @else
+              <div class="text-center py-5 text-muted">
+                <i class="fas fa-calendar-alt fa-3x mb-3"></i>
+                <p class="mb-1 font-weight-semibold">Belum ada perjanjian aktif.</p>
+                <p class="mb-0">Semua jadwal akan tampil otomatis ketika pasien melakukan reservasi.</p>
+              </div>
+            @endif
+          </div>
+        </div>
+      </div>
   @if (Auth::user()->role == 'pasien')
     <div class="row">
       <div class="col-xl-12 col-lg-12">
-        <div class="card shadow mb-4">
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Dokter &amp; Jadwal Praktik</h6>
+        <div class="card shadow-sm mb-4">
+          <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+            <div>
+              <h6 class="m-0 font-weight-bold text-primary">Dokter &amp; Jadwal Praktik</h6>
+              <small class="text-muted">Pilih jadwal terbaik dan lakukan reservasi secara instan.</small>
+            </div>
+            <span class="badge badge-success mt-3 mt-md-0">Terupdate otomatis</span>
           </div>
           <div class="card-body">
             @forelse ($dokterSchedules as $dokterItem)
@@ -184,8 +152,7 @@
                 <div class="card-body p-4">
                   <div class="row align-items-start">
                     <div class="col-md-3 text-center text-md-left mb-3 mb-md-0">
-                      <img src="{{ $dokterImage }}" alt="Foto {{ $dokterItem->nama }}"
-                        class="rounded shadow-sm"
+                      <img src="{{ $dokterImage }}" alt="Foto {{ $dokterItem->nama }}" class="rounded shadow-sm"
                         style="width: 120px; height: 120px; object-fit: cover;">
                     </div>
                    <div class="col-md-9">
@@ -260,6 +227,6 @@
     </div>
     @endif
   <!-- /.container-fluid -->
-</div>
-<!-- End of Main Content -->
+  </div>
+  <!-- End of Page Content -->
 @endsection
