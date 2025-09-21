@@ -166,6 +166,87 @@
       </div>
     </div>
   </div>
+  @if (Auth::user()->role == 'pasien')
+    <div class="row">
+      <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Dokter &amp; Jadwal Praktik</h6>
+          </div>
+          <div class="card-body">
+            @forelse ($dokterSchedules as $dokterItem)
+            @php
+              $dokterImage = $dokterItem->image
+                ? asset('storage/' . $dokterItem->image)
+                : asset('img/undraw_profile.svg');
+            @endphp
+            <div class="card border-left-primary shadow-sm mb-4">
+              <div class="card-body">
+                <div class="d-flex flex-column flex-md-row">
+                  <div class="flex-shrink-0 text-center text-md-left">
+                    <img src="{{ $dokterImage }}" alt="Foto {{ $dokterItem->nama }}"
+                      class="rounded mb-3 mb-md-0"
+                      style="width: 110px; height: 110px; object-fit: cover;">
+                  </div>
+                  <div class="ml-md-4 flex-grow-1">
+                    <div class="d-flex flex-column flex-md-row align-items-md-center mb-2">
+                      <h5 class="font-weight-bold text-primary mb-1 mb-md-0 mr-md-3">{{ $dokterItem->nama }}</h5>
+                      <span class="badge badge-info">{{ $dokterItem->spesialis }}</span>
+                    </div>
+                    @if ($dokterItem->biografi)
+                    <p class="text-gray-600 mb-3">{{ \Illuminate\Support\Str::limit($dokterItem->biografi, 140) }}</p>
+                    @endif
+                    @if ($dokterItem->jadwals->count())
+                    <div class="table-responsive">
+                      <table class="table table-sm mb-0">
+                        <thead class="thead-light">
+                          <tr>
+                            <th>Hari</th>
+                            <th>Waktu</th>
+                            <th class="text-center">Sisa Kapasitas</th>
+                            <th class="text-right">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach ($dokterItem->jadwals as $jadwal)
+                          <tr class="{{ $jadwal->kapasitas <= 0 ? 'text-muted' : '' }}">
+                            <td>{{ $jadwal->hari }}</td>
+                            <td>{{ substr($jadwal->waktu_mulai, 0, 5) }} - {{ substr($jadwal->waktu_selesai, 0, 5) }}</td>
+                            <td class="text-center">
+                              @if ($jadwal->kapasitas > 0)
+                              <span class="badge badge-success">{{ $jadwal->kapasitas }} slot</span>
+                              @else
+                              <span class="badge badge-secondary">Penuh</span>
+                              @endif
+                            </td>
+                            <td class="text-right">
+                              @if ($jadwal->kapasitas > 0)
+                              <a href="{{ route('antrian.index', ['dokter_id' => $dokterItem->id, 'hari' => $jadwal->hari]) }}"
+                                class="btn btn-sm btn-primary">Booking</a>
+                              @else
+                              <button class="btn btn-sm btn-secondary" disabled>Tidak Tersedia</button>
+                              @endif
+                            </td>
+                          </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                    @else
+                    <p class="mb-0 text-gray-500">Belum ada jadwal tersedia untuk dokter ini.</p>
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </div>
+            @empty
+            <p class="mb-0 text-gray-500">Belum ada dokter yang tersedia saat ini.</p>
+            @endforelse
+          </div>
+        </div>
+      </div>
+    </div>
+    @endif
   <!-- /.container-fluid -->
 </div>
 <!-- End of Main Content -->

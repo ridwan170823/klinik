@@ -90,6 +90,7 @@ class AntrianController extends Controller
         if (! $jadwal || $jadwal->kapasitas <= 0) {
             return back()->withErrors(['jadwal_id' => 'Kapasitas jadwal sudah penuh'])->withInput();
         }
+        $nextNomorAntrian = (Antrian::max('nomor_antrian') ?? 0) + 1;
 
         $antrian = Antrian::create([
             'user_id' => Auth::id(),
@@ -97,7 +98,8 @@ class AntrianController extends Controller
             'dokter_id' => $data['dokter_id'],
             'jadwal_id' => $data['jadwal_id'],
             'tanggal' => $data['tanggal'],
-            'status' => 'pending',
+            'status' => 'approved',
+            'nomor_antrian' => $nextNomorAntrian,
         ]);
             $jadwal->decrement('kapasitas');
 
