@@ -118,7 +118,7 @@ Route::get('payments/{antrian}/create', [PaymentsController::class, 'create'])
     ->middleware('checkRole:pasien');
 Route::post('payments/{antrian}', [PaymentsController::class, 'store'])
     ->name('payments.store')
-   ->middleware('checkRole:pasien');
+   ->middleware('checkRole:pasien,admin');
 
    Route::post('notifications/read', [NotificationController::class, 'markAsRead'])
     ->name('notifications.read')
