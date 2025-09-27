@@ -134,6 +134,7 @@
               <tr>
                 <th>No Antrian</th>
                 <th>Nama Pasien</th>
+                <th>Layanan</th>
                 <th>Dokter</th>
                 <th>Jadwal</th>
                 <th>Status</th>
